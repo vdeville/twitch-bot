@@ -1,0 +1,23 @@
+{
+    "name": "valentindeville/twitchbot",
+    "description": "Twitch Bot",
+    "type": "project",
+
+    "require": {
+    },
+
+    "autoload": {
+        "classmap": [
+            "src/class/"
+        ]
+    },
+
+    "license": "GPLV3",
+
+    "authors": [
+        {
+            "name": "Valentin Deville",
+            "email": "contact@valentin-deville.eu"
+        }
+    ]
+}
