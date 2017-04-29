@@ -25,6 +25,8 @@ class IrcConnect
 
     private $channel;
 
+    private $moduleLoader;
+
 
     /**
      * IrcConnect constructor.
@@ -41,6 +43,13 @@ class IrcConnect
         $this->user = $user;
         $this->channel = $channel;
         $this->password = $password;
+
+        $this->moduleLoader = new ModuleLoader([
+            "address" => $this->getAddress(),
+            "port" => $this->getPort(),
+            "user" => $this->getUser(),
+            "channel" => $this->getChannel()
+        ], $this);
     }
 
     /**
@@ -51,7 +60,6 @@ class IrcConnect
 
         if(!$this->socket){
             new \Exception('Error when etablished connection to IRC');
-            return false;
         }
 
         //$this->sendRaw('CAP REQ :twitch.tv/tags'.self::$RETURN);
@@ -59,6 +67,8 @@ class IrcConnect
         $this->sendRaw('PASS ' . $this->getPassword().self::$RETURN);
         $this->sendRaw('NICK ' . $this->getUser().self::$RETURN);
         $this->sendRaw('JOIN ' . $this->getChannel().' '.self::$RETURN);
+
+        $this->moduleLoader->hookAction('Connect');
 
         $this->sendMessage('[ INFO ] $> Bot connected');
 

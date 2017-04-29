@@ -1,0 +1,5 @@
+{
+  "name": "Commands",
+  "description": "This module alllow to add custom command",
+  "author" : ["Valentin Deville"]
+}
