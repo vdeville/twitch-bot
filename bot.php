@@ -3,6 +3,7 @@
 /**
  * Twitch Bot
  */
+namespace TwitchBot;
 
 date_default_timezone_set('Europe/Paris');
 
@@ -12,5 +13,5 @@ DEFINE('USER', '');
 DEFINE('OAUTH', 'oauth:');
 DEFINE('IRC_ADDRESS', 'irc.chat.twitch.tv');
 
-$connect = new \TwitchBot\IrcConnect(IRC_ADDRESS, 6667, USER,'v_deville',OAUTH);
+$connect = new IrcConnect(IRC_ADDRESS, 6667, USER,'v_deville',OAUTH);
 $connect->launch($connect->connect());
