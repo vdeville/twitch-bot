@@ -33,4 +33,18 @@ trait Module
      */
     public function onPing($message){}
 
+    /**
+     * @return String
+     */
+    public function getInfo($info){
+        return (key_exists($info, $this->infos)) ? $this->infos[$info] : false;
+    }
+
+    /**
+     * @return IrcConnect
+     */
+    public function getClient(){
+        return $this->client;
+    }
+
 }

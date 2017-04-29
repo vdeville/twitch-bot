@@ -70,8 +70,6 @@ class IrcConnect
 
         $this->moduleLoader->hookAction('Connect');
 
-        $this->sendMessage('[ INFO ] $> Bot connected');
-
         return $this->socket;
     }
 
@@ -108,10 +106,17 @@ class IrcConnect
         }
     }
 
+    /**
+     * @param String $msg
+     */
     public function sendMessage($msg){
         $this->sendRaw('PRIVMSG #'.$this->getChannel().' :'.$msg);
     }
 
+    /**
+     * @param String $msg
+     * @param string $type
+     */
     public function sendToLog($msg, $type = 'info'){
 
         switch ($type){

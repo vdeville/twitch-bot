@@ -18,11 +18,12 @@ class Commands {
     {
         $this->commands = file_get_contents(__DIR__ . '/commands.json');
         $this->client = $client;
+        $this->infos = $infos;
     }
 
     public function onConnect()
     {
-        $this->client->sendMessage('Plugin commands activate !');
+        $this->getClient()->sendMessage('Plugin commands activate !');
     }
 
     /**
@@ -30,7 +31,7 @@ class Commands {
      */
     public function onMessage($message)
     {
-        $this->client->sendMessage('Message receive!');
+        $this->getClient()->sendMessage('Message receive!');
     }
 
 }
