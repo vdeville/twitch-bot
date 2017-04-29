@@ -28,23 +28,23 @@ class IrcConnect
 
     /**
      * IrcConnect constructor.
-     * @param $address
-     * @param $port
-     * @param $user
-     * @param null $password
-     * @param $channel
+     * @param String $address
+     * @param Int $port
+     * @param String $user
+     * @param String $channel
+     * @param String null $password
      */
-    public function __construct($address, $port, $user, $password = null, $channel)
+    public function __construct($address, $port, $user, $channel, $password = null)
     {
         $this->address = $address;
         $this->port = $port;
         $this->user = $user;
-        $this->password = $password;
         $this->channel = $channel;
+        $this->password = $password;
     }
 
     /**
-     * @return bool
+     * @return $this->socket;
      */
     public function connect(){
         $this->socket = fsockopen($this->getAddress(), $this->getPort());
@@ -60,11 +60,13 @@ class IrcConnect
         $this->sendRaw('NICK ' . $this->getUser().self::$RETURN);
         $this->sendRaw('JOIN ' . $this->getChannel().' '.self::$RETURN);
 
+        $this->sendMessage('[ INFO ] $> Bot connected');
+
         return $this->socket;
     }
 
     /**
-     * @param $raw
+     * @param String $raw
      */
     public function sendRaw($raw){
         fputs($this->socket, $raw.self::$RETURN);
@@ -113,11 +115,11 @@ class IrcConnect
                 $toLog = "[ UNKNOW ] " . $msg;
         }
 
-        echo $toLog;
+        echo $toLog . PHP_EOL;
     }
 
     /**
-     * @return mixed
+     * @return String
      */
     public function getAddress()
     {
@@ -125,7 +127,7 @@ class IrcConnect
     }
 
     /**
-     * @return mixed
+     * @return Int
      */
     public function getPort()
     {
@@ -133,7 +135,7 @@ class IrcConnect
     }
 
     /**
-     * @return mixed
+     * @return String
      */
     public function getUser()
     {
@@ -141,7 +143,7 @@ class IrcConnect
     }
 
     /**
-     * @return mixed
+     * @return String
      */
     public function getPassword()
     {
@@ -149,7 +151,7 @@ class IrcConnect
     }
 
     /**
-     * @return mixed
+     * @return String
      */
     public function getNickname()
     {
@@ -165,7 +167,7 @@ class IrcConnect
     }
 
     /**
-     * @return mixed
+     * @return String
      */
     public function getChannel()
     {
