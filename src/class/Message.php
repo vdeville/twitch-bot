@@ -37,7 +37,7 @@ class Message
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getUsername()
     {
@@ -45,7 +45,7 @@ class Message
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getMessage()
     {
@@ -53,7 +53,7 @@ class Message
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getOriginalMsg()
     {
