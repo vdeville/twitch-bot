@@ -18,6 +18,11 @@ class Responder {
         $this->infos = $infos;
     }
 
+    public function onConnect()
+    {
+        $this->getClient()->sendMessage('Plugin responder activate !');
+    }
+
     /**
      * @param \TwitchBot\Message $message
      */
