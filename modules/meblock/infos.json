@@ -1,0 +1,5 @@
+{
+  "name": "/me block",
+  "description": "Block /me",
+  "author" : ["Valentin Deville"]
+}
