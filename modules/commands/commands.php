@@ -27,11 +27,11 @@ class Commands {
     }
 
     /**
-     * @param $message
+     * @param array $data
      */
-    public function onMessage($message)
+    public function onMessage($data)
     {
-        $this->getClient()->sendMessage('Message receive!');
+        $this->getClient()->sendMessage('Message receive!, user: ' . $data['username']);
     }
 
 }

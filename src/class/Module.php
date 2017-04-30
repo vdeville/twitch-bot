@@ -22,16 +22,16 @@ trait Module
     /**
      * Is call when message is send to channel
      *
-     * @param String $message
+     * @param array $data
      */
-    public function onMessage($message){}
+    public function onMessage($data){}
 
     /**
      * Is call when the bot was ping (@bot)
      *
-     * @param String $message
+     * @param array $data
      */
-    public function onPing($message){}
+    public function onPing($data){}
 
     /**
      * @return String

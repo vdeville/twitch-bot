@@ -66,9 +66,10 @@ class IrcConnect
         //$this->sendRaw('CAP REQ :twitch.tv/commands'.self::$RETURN);
         $this->sendRaw('PASS ' . $this->getPassword().self::$RETURN);
         $this->sendRaw('NICK ' . $this->getUser().self::$RETURN);
-        $this->sendRaw('JOIN ' . $this->getChannel().' '.self::$RETURN);
+        $this->sendRaw('JOIN #' . $this->getChannel().' '.self::$RETURN);
 
-        $this->moduleLoader->hookAction('Connect');
+        $this->getModuleLoader()->hookAction('Connect');
+        $this->sendToLog('Hook onConnect send');
 
         return $this->socket;
     }
@@ -88,6 +89,9 @@ class IrcConnect
 
         while ($connected){
             $data = fgets($socket);
+
+            //$moderator = substr(strstr(strstr($data, 'user-type='), ' ', true), 10);
+
             $return = explode(':',$data);
 
             if(rtrim($return[0]) == 'PING'){
@@ -96,11 +100,21 @@ class IrcConnect
             }
 
             if($data){
-                echo $data;
+
+                $this->sendToLog($data);
 
                 if(preg_match('#:(.+):End Of /MOTD Command.#i',$data)){
                     $connected = false;
                     $this->sendToLog('End of connection, server send the end message', 'error');
+                } else if (preg_match('/^:tmi.twitch.tv/',$data)){
+
+                } else if (preg_match('/PRIVMSG/', $data)){
+                    $message = $this->sanitizeMsg($data);
+
+                    if($message['username'] != $this->getUser()){
+                        $this->getModuleLoader()->hookAction('Message', $this->sanitizeMsg($data));
+                        $this->sendToLog('Hook onMessage send');
+                    }
                 }
             }
         }
@@ -134,6 +148,23 @@ class IrcConnect
     }
 
     /**
+     * @param $rawMsg
+     * @return array
+     */
+    public function sanitizeMsg($rawMsg){
+        preg_match('/:(.*?)\!/s', $rawMsg, $userR);
+        $username = $userR[1];
+        $message = strstr($rawMsg, 'PRIVMSG #' . $this->getChannel() .' :');
+        $message = substr($message, 11 + strlen($this->getChannel()));
+
+        return [
+            'username' => strtolower($username),
+            'message' => $message,
+            'user_type' => ''
+        ];
+    }
+
+    /**
      * @return String
      */
     public function getAddress()
@@ -154,7 +185,7 @@ class IrcConnect
      */
     public function getUser()
     {
-        return $this->user;
+        return strtolower($this->user);
     }
 
     /**
@@ -187,6 +218,13 @@ class IrcConnect
     public function getChannel()
     {
         return $this->channel;
+    }
+
+    /**
+     * @return ModuleLoader
+     */
+    public function getModuleLoader(){
+        return $this->moduleLoader;
     }
 
 }
