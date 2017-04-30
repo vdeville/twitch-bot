@@ -1,0 +1,5 @@
+{
+  "name": "Setinfo",
+  "description": "Reply when user type !info or streamer !setinfo",
+  "author" : ["Valentin Deville"]
+}
