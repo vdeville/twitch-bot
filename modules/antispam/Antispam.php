@@ -60,6 +60,11 @@ class Antispam
                 $this->getClient()->sendMessage($data->getUsername() . ' timeout, message trop long');
             }
 
+            if ($this->tooManyCaps($data->getMessage())) {
+                $this->timeout($data->getUsername(), 20);
+                $this->getClient()->sendMessage($data->getUsername() . ' timeout, too many caps');
+            }
+
         }
 
 
@@ -134,6 +139,24 @@ class Antispam
         } else {
             return false;
         }
+    }
+
+    /**
+     * @param $message
+     * @return bool
+     */
+    private function tooManyCaps($message){
+        $capsCount = strlen(preg_replace('![^A-Z]+!', '', $message));
+        $messageLenght = strlen($message);
+
+        $pourcentCaps = $capsCount * 100 / $messageLenght;
+
+        if($pourcentCaps > $this->getConfig('poucent_caps') AND $messageLenght > 8){
+            return true;
+        } else {
+            return false;
+        }
+
     }
 
     /**
