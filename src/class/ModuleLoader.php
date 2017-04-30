@@ -32,12 +32,13 @@ class ModuleLoader
      * Hook available: Connect, Message, Ping
      *
      */
-    public function hookAction($hook, $data = null){
-        foreach ($this->getModulesList() as $module){
+    public function hookAction($hook, $data = null)
+    {
+        foreach ($this->getModulesList() as $module) {
             /** @var Module $instance */
             $module = ucfirst($module);
             $instance = new $module($this->getInfos(), $this->getClient());
-            $method = 'on'.$hook;
+            $method = 'on' . $hook;
             $instance->$method($data);
         }
     }
@@ -45,8 +46,9 @@ class ModuleLoader
     /**
      * @return array
      */
-    private function getList(){
-        $list = scandir(dirname(dirname(__DIR__)).'/modules/');
+    private function getList()
+    {
+        $list = scandir(dirname(dirname(__DIR__)) . '/modules/');
         $list = array_diff($list, array('.', '..'));
 
         return $list;

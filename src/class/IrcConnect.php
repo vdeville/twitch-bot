@@ -55,18 +55,19 @@ class IrcConnect
     /**
      * @return $this->socket;
      */
-    public function connect(){
+    public function connect()
+    {
         $this->socket = fsockopen($this->getAddress(), $this->getPort());
 
-        if(!$this->socket){
+        if (!$this->socket) {
             new \Exception('Error when etablished connection to IRC');
         }
 
-        $this->sendRaw('CAP REQ :twitch.tv/tags'.self::$RETURN);
+        $this->sendRaw('CAP REQ :twitch.tv/tags' . self::$RETURN);
         //$this->sendRaw('CAP REQ :twitch.tv/commands'.self::$RETURN);
-        $this->sendRaw('PASS ' . $this->getPassword().self::$RETURN);
-        $this->sendRaw('NICK ' . $this->getUser().self::$RETURN);
-        $this->sendRaw('JOIN #' . $this->getChannel().' '.self::$RETURN);
+        $this->sendRaw('PASS ' . $this->getPassword() . self::$RETURN);
+        $this->sendRaw('NICK ' . $this->getUser() . self::$RETURN);
+        $this->sendRaw('JOIN #' . $this->getChannel() . ' ' . self::$RETURN);
 
         $this->getModuleLoader()->hookAction('Connect');
         $this->sendToLog('Hook onConnect send');
@@ -77,39 +78,39 @@ class IrcConnect
     /**
      * @param String $raw
      */
-    public function sendRaw($raw){
-        fputs($this->socket, $raw.self::$RETURN);
+    public function sendRaw($raw)
+    {
+        fputs($this->socket, $raw . self::$RETURN);
     }
 
     /**
      * @param $socket
      */
-    public function launch($socket){
+    public function launch($socket)
+    {
         $connected = true;
 
-        while ($connected){
+        while ($connected) {
             $data = fgets($socket);
 
-            $return = explode(':',$data);
-
-            if(rtrim($return[0]) == 'PING'){
-                $this->sendRaw('PONG :tmi.twitch.tv');
+            $return = explode(':', $data);
+            if (rtrim($return[0]) == 'PING') {
+                $this->sendRaw('PONG :'.$return[1]);
                 $this->sendToLog('Ping Send !');
             }
 
-            if($data){
-
+            if ($data) {
                 $this->sendToLog($data);
 
-                if(preg_match('#:(.+):End Of /MOTD Command.#i',$data)){
+                if (preg_match('#:(.+):End Of /MOTD Command.#i', $data)) {
                     $connected = false;
                     $this->sendToLog('End of connection, server send the end message', 'error');
-                } else if (preg_match('/^:tmi.twitch.tv/',$data)){
-
-                } else if (preg_match('/PRIVMSG/', $data)){
+                } else if (preg_match('/^:tmi.twitch.tv/', $data)) {
+                    // Information about connection
+                } else if (preg_match('/PRIVMSG/', $data)) {
                     $message = $this->sanitizeMsg($data);
 
-                    if($message->getUsername() != $this->getUser()){
+                    if ($message->getUsername() != $this->getUser()) {
                         $this->sendToLog('Hook onMessage send');
                         $this->getModuleLoader()->hookAction('Message', $message);
                     }
@@ -121,17 +122,18 @@ class IrcConnect
     /**
      * @param String $msg
      */
-    public function sendMessage($msg){
-        $this->sendRaw('PRIVMSG #'.$this->getChannel().' :'.$msg);
+    public function sendMessage($msg)
+    {
+        $this->sendRaw('PRIVMSG #' . $this->getChannel() . ' :' . $msg);
     }
 
     /**
      * @param String $msg
      * @param string $type
      */
-    public function sendToLog($msg, $type = 'info'){
-
-        switch ($type){
+    public function sendToLog($msg, $type = 'info')
+    {
+        switch ($type) {
             case 'error':
                 $toLog = "[ ERROR ] " . $msg;
                 break;
@@ -149,12 +151,13 @@ class IrcConnect
      * @param $rawMsg
      * @return Message
      */
-    public function sanitizeMsg($rawMsg){
+    public function sanitizeMsg($rawMsg)
+    {
         preg_match('/:(.*?)\!/s', $rawMsg, $userR);
         $username = $userR[1];
         $username = strtolower($username);
 
-        $message = strstr($rawMsg, 'PRIVMSG #' . $this->getChannel() .' :');
+        $message = strstr($rawMsg, 'PRIVMSG #' . $this->getChannel() . ' :');
         $message = substr($message, 11 + strlen($this->getChannel()));
 
         $isMod = strstr($rawMsg, 'mod=');
@@ -173,8 +176,8 @@ class IrcConnect
          * 2 = mod
          * 3 = broadcaster
          */
-
-        if($isBroacaster) $userType = 3;
+        
+        if ($isBroacaster) $userType = 3;
         elseif ($isMod) $userType = 2;
         elseif ($isSub) $userType = 1;
         else $userType = 0;
@@ -243,7 +246,8 @@ class IrcConnect
     /**
      * @return ModuleLoader
      */
-    public function getModuleLoader(){
+    public function getModuleLoader()
+    {
         return $this->moduleLoader;
     }
 
