@@ -40,6 +40,14 @@ trait Module
     }
 
     /**
+     * Is call when twitch send PING command to the bot and bot reply PONG !
+     * (Every 5 minutes)
+     */
+    public function onPong()
+    {
+    }
+
+    /**
      * @return String
      */
     public function getInfo($info)

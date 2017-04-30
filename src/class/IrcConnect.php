@@ -97,6 +97,8 @@ class IrcConnect
             if (rtrim($return[0]) == 'PING') {
                 $this->sendRaw('PONG :'.$return[1]);
                 $this->sendToLog('Ping Send !');
+                $this->getModuleLoader()->hookAction('Pong');
+                $this->sendToLog('Hook onPong send !');
             }
 
             if ($data) {
@@ -176,7 +178,7 @@ class IrcConnect
          * 2 = mod
          * 3 = broadcaster
          */
-        
+
         if ($isBroacaster) $userType = 3;
         elseif ($isMod) $userType = 2;
         elseif ($isSub) $userType = 1;
