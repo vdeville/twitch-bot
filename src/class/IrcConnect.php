@@ -44,6 +44,8 @@ class IrcConnect
         $this->channel = $channel;
         $this->password = $password;
 
+        $this->nickname = $user;
+
         $this->moduleLoader = new ModuleLoader([
             "address" => $this->getAddress(),
             "port" => $this->getPort(),
@@ -112,8 +114,13 @@ class IrcConnect
                 } else if (preg_match('/PRIVMSG/', $data)) {
                     $message = $this->sanitizeMsg($data);
 
+                    if(strstr($message->getMessage(), '@'.$this->getNickname())){
+                        $this->sendToLog('Hook onPing send !');
+                        $this->getModuleLoader()->hookAction('Ping', $message);
+                    }
+
                     if ($message->getUsername() != $this->getUser()) {
-                        $this->sendToLog('Hook onMessage send');
+                        $this->sendToLog('Hook onMessage send !');
                         $this->getModuleLoader()->hookAction('Message', $message);
                     }
                 }
