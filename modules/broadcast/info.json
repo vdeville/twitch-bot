@@ -1,0 +1,5 @@
+{
+  "name": "Broadcast",
+  "description": "Send message every 5 minutes choose from list",
+  "author" : ["Valentin Deville"]
+}
