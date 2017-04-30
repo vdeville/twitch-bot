@@ -152,6 +152,8 @@ class IrcConnect
     public function sanitizeMsg($rawMsg){
         preg_match('/:(.*?)\!/s', $rawMsg, $userR);
         $username = $userR[1];
+        $username = strtolower($username);
+
         $message = strstr($rawMsg, 'PRIVMSG #' . $this->getChannel() .' :');
         $message = substr($message, 11 + strlen($this->getChannel()));
 
@@ -177,7 +179,7 @@ class IrcConnect
         elseif ($isSub) $userType = 1;
         else $userType = 0;
 
-        $message = new Message(strtolower($username), $message, $userType);
+        $message = new Message($username, $message, $userType);
 
         return $message;
     }
@@ -235,7 +237,7 @@ class IrcConnect
      */
     public function getChannel()
     {
-        return $this->channel;
+        return strtolower($this->channel);
     }
 
     /**
