@@ -191,7 +191,7 @@ class IrcConnect
         elseif ($isSub) $userType = 1;
         else $userType = 0;
 
-        $message = new Message($rawMsg, $username, $message, $userType);
+        $message = new Message($rawMsg, $this->removeReturns($username), $this->removeReturns($message), $userType);
 
         return $message;
     }
@@ -258,6 +258,14 @@ class IrcConnect
     public function getModuleLoader()
     {
         return $this->moduleLoader;
+    }
+
+    /**
+     * @param $string
+     * @return string
+     */
+    public function removeReturns($string){
+        return str_replace("\r\n",'', $string);
     }
 
 }
