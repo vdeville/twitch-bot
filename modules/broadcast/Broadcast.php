@@ -33,7 +33,12 @@ class Broadcast
 
     public function onPong()
     {
-        $this->getClient()->sendMessage($this->getNextMessage());
+        $twitchApi = new Twitchapi($this->infos, $this->getClient());
+        $livestreamStatus = $twitchApi->getLivestreamStatus();
+
+        if($livestreamStatus == 'online'){
+            $this->getClient()->sendMessage($this->getNextMessage());
+        }
     }
 
     /**
