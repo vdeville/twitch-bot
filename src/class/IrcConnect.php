@@ -184,7 +184,7 @@ class IrcConnect
         elseif ($isSub) $userType = 1;
         else $userType = 0;
 
-        $message = new Message($username, $message, $userType);
+        $message = new Message($rawMsg, $username, $message, $userType);
 
         return $message;
     }

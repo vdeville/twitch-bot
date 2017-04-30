@@ -17,17 +17,21 @@ class Message
 
     private $date;
 
+    private $originalMsg;
+
     /**
      * Message constructor.
+     * @param $originalMsg
      * @param $username
      * @param $message
      * @param int $userType
      */
-    public function __construct($username, $message, $userType = 0)
+    public function __construct($originalMsg, $username, $message, $userType = 0)
     {
         $this->username = $username;
         $this->message = $message;
         $this->user_type = $userType;
+        $this->originalMsg = $originalMsg;
 
         $this->date = new \DateTime();
     }
@@ -46,6 +50,14 @@ class Message
     public function getMessage()
     {
         return $this->message;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOriginalMsg()
+    {
+        return $this->originalMsg;
     }
 
     /**
