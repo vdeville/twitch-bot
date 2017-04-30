@@ -111,9 +111,9 @@ class IrcConnect
                 } else if (preg_match('/PRIVMSG/', $data)){
                     $message = $this->sanitizeMsg($data);
 
-                    if($message['username'] != $this->getUser()){
-                        $this->getModuleLoader()->hookAction('Message', $this->sanitizeMsg($data));
+                    if($message->getUsername() != $this->getUser()){
                         $this->sendToLog('Hook onMessage send');
+                        $this->getModuleLoader()->hookAction('Message', $message);
                     }
                 }
             }
@@ -149,7 +149,7 @@ class IrcConnect
 
     /**
      * @param $rawMsg
-     * @return array
+     * @return Message
      */
     public function sanitizeMsg($rawMsg){
         preg_match('/:(.*?)\!/s', $rawMsg, $userR);
@@ -157,11 +157,9 @@ class IrcConnect
         $message = strstr($rawMsg, 'PRIVMSG #' . $this->getChannel() .' :');
         $message = substr($message, 11 + strlen($this->getChannel()));
 
-        return [
-            'username' => strtolower($username),
-            'message' => $message,
-            'user_type' => ''
-        ];
+        $mesage = new Message(strtolower($username), $message, 0);
+
+        return $mesage;
     }
 
     /**

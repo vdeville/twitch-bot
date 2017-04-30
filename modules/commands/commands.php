@@ -16,7 +16,7 @@ class Commands {
      */
     public function __construct(array $infos, $client)
     {
-        $this->commands = file_get_contents(__DIR__ . '/commands.json');
+        $this->commands = json_decode(file_get_contents(__DIR__ . '/commands.json'), true);
         $this->client = $client;
         $this->infos = $infos;
     }
@@ -27,11 +27,35 @@ class Commands {
     }
 
     /**
-     * @param array $data
+     * @param \TwitchBot\Message $data
      */
     public function onMessage($data)
     {
-        $this->getClient()->sendMessage('Message receive!, user: ' . $data['username']);
+        if($data->getMessage()[0] == '!'){
+
+            $command = trim($data->getMessage());
+            $command = substr($command, 1);
+            $command = explode(' ',$command)[0];
+
+            if(key_exists($command, $this->getCommands())){
+                $this->getClient()->sendMessage($data->getUsername() . ', ' . $this->getCommands($command));
+            } else{
+                $this->getClient()->sendToLog('The command !' . $command . ' is not mapped');
+            }
+
+        }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCommands($key = null)
+    {
+        if($key){
+            return $this->commands[$key];
+        } else {
+            return $this->commands;
+        }
     }
 
 }
