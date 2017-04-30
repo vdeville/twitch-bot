@@ -21,13 +21,13 @@ class Message
      * Message constructor.
      * @param $username
      * @param $message
-     * @param int $user_type
+     * @param int $userType
      */
-    public function __construct($username, $message, $user_type = 0)
+    public function __construct($username, $message, $userType = 0)
     {
         $this->username = $username;
         $this->message = $message;
-        $this->user_type = $user_type;
+        $this->user_type = $userType;
 
         $this->date = new \DateTime();
     }

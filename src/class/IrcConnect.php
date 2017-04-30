@@ -62,7 +62,7 @@ class IrcConnect
             new \Exception('Error when etablished connection to IRC');
         }
 
-        //$this->sendRaw('CAP REQ :twitch.tv/tags'.self::$RETURN);
+        $this->sendRaw('CAP REQ :twitch.tv/tags'.self::$RETURN);
         //$this->sendRaw('CAP REQ :twitch.tv/commands'.self::$RETURN);
         $this->sendRaw('PASS ' . $this->getPassword().self::$RETURN);
         $this->sendRaw('NICK ' . $this->getUser().self::$RETURN);
@@ -89,8 +89,6 @@ class IrcConnect
 
         while ($connected){
             $data = fgets($socket);
-
-            //$moderator = substr(strstr(strstr($data, 'user-type='), ' ', true), 10);
 
             $return = explode(':',$data);
 
@@ -157,9 +155,31 @@ class IrcConnect
         $message = strstr($rawMsg, 'PRIVMSG #' . $this->getChannel() .' :');
         $message = substr($message, 11 + strlen($this->getChannel()));
 
-        $mesage = new Message(strtolower($username), $message, 0);
+        $isMod = strstr($rawMsg, 'mod=');
+        $isMod = substr($isMod, 4, 1);
+        $isMod = boolval($isMod);
 
-        return $mesage;
+        $isSub = strstr($rawMsg, 'subscriber=');
+        $isSub = substr($isSub, 11, 1);
+        $isSub = boolval($isSub);
+
+        $isBroacaster = ($this->getChannel() == $username) ? true : false;
+
+        /**
+         * 0 = viewer
+         * 1 = sub
+         * 2 = mod
+         * 3 = broadcaster
+         */
+
+        if($isBroacaster) $userType = 3;
+        elseif ($isMod) $userType = 2;
+        elseif ($isSub) $userType = 1;
+        else $userType = 0;
+
+        $message = new Message(strtolower($username), $message, $userType);
+
+        return $message;
     }
 
     /**
