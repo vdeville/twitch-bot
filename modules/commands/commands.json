@@ -1,4 +1,5 @@
 {
   "setup": "My setup is...",
-  "twitter": "My twitter is..."
+  "twitter": "My twitter is...",
+  "tweeter": "!twitter"
 }

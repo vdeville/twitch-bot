@@ -52,6 +52,10 @@ class Commands {
     public function getCommands($key = null)
     {
         if($key){
+            $command = $this->commands[$key];
+            if($command[0] == '!'){
+                $key = substr($command, 1);
+            }
             return $this->commands[$key];
         } else {
             return $this->commands;
