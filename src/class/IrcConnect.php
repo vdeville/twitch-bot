@@ -162,8 +162,9 @@ class IrcConnect
      */
     public function sanitizeMsg($rawMsg)
     {
-        preg_match('/:(.*?)\!/s', $rawMsg, $userR);
-        $username = $userR[1];
+        $username = strstr($rawMsg, 'display-name=');
+        $username = strstr($username, ';', true);
+        $username = str_replace('display-name=', '', $username);
         $username = strtolower($username);
 
         $message = strstr($rawMsg, 'PRIVMSG #' . $this->getChannel() . ' :');
