@@ -8,6 +8,8 @@ class Antispam
 
     use \TwitchBot\Module;
 
+    private static $CONFIGJSON = __DIR__ . '/config.json';
+
     private $config;
 
     /**
@@ -17,7 +19,7 @@ class Antispam
      */
     public function __construct(array $infos, $client)
     {
-        $this->config = json_decode(file_get_contents(__DIR__ . '/config.json'), true);
+        $this->config = json_decode(file_get_contents(self::$CONFIGJSON), true);
         $this->client = $client;
         $this->infos = $infos;
     }
@@ -41,6 +43,27 @@ class Antispam
 
         $message = strtolower($data->getMessage());
 
+        if ($data->getMessage()[0] == '!') {
+
+            $command = trim($data->getMessage());
+            $command = substr($command, 1);
+            $command = explode(' ', $command)[0];
+
+            $command = strtolower($command);
+
+            switch ($command) {
+                case 'permitlink':
+                    ($data->getUserType() == 3) ? $this->addPermitPeopleLink($data) : false;
+                    break;
+                case 'permitlinkoff':
+                    ($data->getUserType() == 3) ? $this->removePermitPeopleLink($data) : false;
+                    break;
+                default:
+                    break;
+            }
+
+        }
+
         if ($data->getUserType() < 2) {
             /** viewer & sub */
 
@@ -50,7 +73,7 @@ class Antispam
                 $this->getClient()->sendMessage($data->getUsername() . ' banni pour un mot ' . $isBlacklisted);
             }
 
-            if ($this->asLink($message)) {
+            if ($this->asLink($message) AND !$this->isAuthorizedPepopleLink($data->getUsername())) {
                 $this->timeout($data->getUsername(), 20);
                 $this->getClient()->sendMessage($data->getUsername() . ' timeout pour un lien');
             }
@@ -76,6 +99,22 @@ class Antispam
     private function getConfig($type)
     {
         return $this->config[$type];
+    }
+
+    /**
+     * @return mixed
+     */
+    private function setConfig($type, $value)
+    {
+        $config = $this->config;
+
+        foreach ($config as $key => $v) {
+            if ($key == $type) {
+                $this->config[$key] = $value;
+            }
+        }
+
+        file_put_contents(self::$CONFIGJSON, json_encode($this->config));
     }
 
     /**
@@ -145,18 +184,74 @@ class Antispam
      * @param $message
      * @return bool
      */
-    private function tooManyCaps($message){
+    private function tooManyCaps($message)
+    {
         $capsCount = strlen(preg_replace('![^A-Z]+!', '', $message));
         $messageLenght = strlen($message);
 
         $pourcentCaps = $capsCount * 100 / $messageLenght;
 
-        if($pourcentCaps > $this->getConfig('poucent_caps') AND $messageLenght > 8){
+        if ($pourcentCaps > $this->getConfig('pourcent_caps') AND $messageLenght > 8) {
             return true;
         } else {
             return false;
         }
 
+    }
+
+    /**
+     * @param $user
+     * @return bool
+     */
+    private function isAuthorizedPepopleLink($user)
+    {
+        $authorizedPeoples = $this->getConfig('authorized_people');
+
+        foreach ($authorizedPeoples as $username) {
+            if ($user == $username) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param \TwitchBot\Message $data
+     */
+    private function addPermitPeopleLink($data)
+    {
+
+        $storage = $this->getConfig('authorized_people');
+        $user = substr($data->getMessage(), 12);
+        $user = strtolower($user);
+
+        if (!in_array($user, $storage)) {
+            $storage[] = $user;
+            $this->setConfig('authorized_people', $storage);
+            $this->getClient()->sendMessage($user . ', is now authorized to post link');
+        } else {
+            $this->getClient()->sendMessage($user . ', is already authorized to post link');
+        }
+    }
+
+    /**
+     * @param \TwitchBot\Message $data
+     */
+    private function removePermitPeopleLink($data)
+    {
+        $storage = $this->getConfig('authorized_people');
+        $user = substr($data->getMessage(), 15);
+        $user = strtolower($user);
+
+        $key = array_search($user, $storage);
+        if ($key != false) {
+            unset($storage[$key]);
+            $this->setConfig('authorized_people', $storage);
+            $this->getClient()->sendMessage($user . ', is removed from authorized people to post link');
+        } else {
+            $this->getClient()->sendMessage($user . ', is already not authorized to post link');
+        }
     }
 
     /**

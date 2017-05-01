@@ -1,10 +1,25 @@
 {
   "blacklisted_word": {
-    "level-1": ["level1", "level11"],
-    "level-2": ["level2", "level22"],
-    "level-3": ["level3", "level33"]
+    "level-1": [
+      "level1",
+      "level11"
+    ],
+    "level-2": [
+      "level2",
+      "level22"
+    ],
+    "level-3": [
+      "level3",
+      "level33"
+    ]
   },
-  "whitelist_domain": ["google.com", "google.fr"],
+  "whitelist_domain": [
+    "google.com",
+    "google.fr"
+  ],
   "max_lenght": 300,
-  "poucent_caps": 60
+  "pourcent_caps": 60,
+  "authorized_people": [
+    "v_deville"
+  ]
 }
