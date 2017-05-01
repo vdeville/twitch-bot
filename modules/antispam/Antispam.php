@@ -205,6 +205,7 @@ class Antispam
      */
     private function isAuthorizedPepopleLink($user)
     {
+        $user = strtolower($user);
         $authorizedPeoples = $this->getConfig('authorized_people');
 
         foreach ($authorizedPeoples as $username) {
@@ -245,7 +246,7 @@ class Antispam
         $user = strtolower($user);
 
         $key = array_search($user, $storage);
-        if ($key != false) {
+        if ($key !== false) {
             unset($storage[$key]);
             $this->setConfig('authorized_people', $storage);
             $this->getClient()->sendMessage($user . ', is removed from authorized people to post link');
