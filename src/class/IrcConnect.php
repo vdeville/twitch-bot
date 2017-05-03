@@ -123,6 +123,9 @@ class IrcConnect
                         $this->sendToLog('Hook onMessage send !');
                         $this->getModuleLoader()->hookAction('Message', $message);
                     }
+                } else if (preg_match('/USERNOTICE/', $data)){
+                    $this->sendToLog('Hook onUsernotice send !');
+                    $this->getModuleLoader()->hookAction('Usernotice', $data);
                 }
             }
         }

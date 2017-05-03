@@ -48,6 +48,15 @@ trait Module
     }
 
     /**
+     * Is call when twitch send Usernotice (ex: sub)
+     *
+     * @param string $rawMsg
+     */
+    public function onUsernotice($rawMsg)
+    {
+    }
+
+    /**
      * @return String
      */
     public function getInfo($info)

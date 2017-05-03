@@ -29,7 +29,7 @@ class ModuleLoader
      * @param $hook
      * @param null $data
      *
-     * Hook available: Connect, Message, Ping, Pong
+     * Hook available: Connect, Message, Ping, Pong, Usernotice
      *
      */
     public function hookAction($hook, $data = null)
