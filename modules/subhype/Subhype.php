@@ -28,8 +28,15 @@ class Subhype
      */
     public function onUsernotice($rawMsg)
     {
-        $username = strstr('login=', $rawMsg);
-        $username = strstr(';', $username, true);
+        $username = strstr($rawMsg, 'login=');
+        $username = strstr($username, ';', true);
+        $username = str_replace('login=', '', $username);
+
+        $months = strstr($rawMsg, 'msg-param-months=');
+        if($months != false){
+            $months = strstr($months, ';', true);
+            $months = str_replace('msg-param-months=', '', $months);
+        }
 
         $emojis = '';
 
@@ -37,7 +44,12 @@ class Subhype
             $emojis .= ' ' . $emoji;
         }
 
-        $this->getClient()->sendMessage($username . ' has just subscribed !' . $emojis);
+        if($months != false){
+            $this->getClient()->sendMessage($username . ' has just resub from ' . $months . ' months !' . $emojis);
+        } else{
+            $this->getClient()->sendMessage($username . ' has just subscribed for the first time !' . $emojis);
+        }
+
     }
 
     public function onConnect()
