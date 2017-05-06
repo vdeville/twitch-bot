@@ -66,7 +66,7 @@ class IrcConnect
         }
 
         $this->sendRaw('CAP REQ :twitch.tv/tags' . self::$RETURN);
-        //$this->sendRaw('CAP REQ :twitch.tv/commands'.self::$RETURN);
+        $this->sendRaw('CAP REQ :twitch.tv/commands'.self::$RETURN);
         $this->sendRaw('PASS ' . $this->getPassword() . self::$RETURN);
         $this->sendRaw('NICK ' . $this->getUser() . self::$RETURN);
         $this->sendRaw('JOIN #' . $this->getChannel() . ' ' . self::$RETURN);
