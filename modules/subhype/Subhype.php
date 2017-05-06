@@ -36,6 +36,9 @@ class Subhype
         if($months != false){
             $months = strstr($months, ';', true);
             $months = str_replace('msg-param-months=', '', $months);
+            if($months == '1'){
+                $months = false;
+            }
         }
 
         $emojis = '';
