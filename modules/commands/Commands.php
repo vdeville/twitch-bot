@@ -35,10 +35,16 @@ class Commands {
 
             $command = trim($data->getMessage());
             $command = substr($command, 1);
-            $command = explode(' ',$command)[0];
+            $explode = explode(' ',$command);
+            $command = $explode[0];
+            $userToPing = (isset($explode[1])) ? $explode[1] : false;
 
             if(key_exists($command, $this->getCommands())){
-                $this->getClient()->sendMessage($data->getUsername() . ', ' . $this->getCommands($command));
+                if($userToPing != false){
+                    $this->getClient()->sendMessage($userToPing . ', ' . $this->getCommands($command));
+                } else {
+                    $this->getClient()->sendMessage($this->getCommands($command));
+                }
             } else{
                 $this->getClient()->sendToLog('The command !' . $command . ' is not mapped');
             }
