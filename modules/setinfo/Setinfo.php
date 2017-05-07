@@ -48,7 +48,12 @@ class Setinfo
                     ($data->getUserType() == 3) ? $this->setInfo($data) : false;
                     break;
                 case 'info':
-                    $this->getClient()->sendMessage('@'.$data->getUsername() . ', ' . $this->getInfo());
+                    $explode = explode(' ', $data->getMessage());
+                    if(isset($explode[1])){
+                        $this->getClient()->sendMessage($explode[1] . ', ' . $this->getInfo());
+                    } else{
+                        $this->getClient()->sendMessage($this->getInfo());
+                    }
                     break;
                 default:
                     break;
