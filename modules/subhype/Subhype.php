@@ -28,29 +28,37 @@ class Subhype
      */
     public function onUsernotice($rawMsg)
     {
-        $username = strstr($rawMsg, 'login=');
-        $username = strstr($username, ';', true);
-        $username = str_replace('login=', '', $username);
-
-        $months = strstr($rawMsg, 'msg-param-months=');
-        if($months != false){
-            $months = strstr($months, ';', true);
-            $months = str_replace('msg-param-months=', '', $months);
-            if($months == '1'){
-                $months = false;
-            }
-        }
-
         $emojis = '';
-
         foreach ($this->getConfig('emotes') as $emoji) {
             $emojis .= ' ' . $emoji;
         }
 
-        if($months != false){
-            $this->getClient()->sendMessage($username . ' has just resub from ' . $months . ' months !' . $emojis);
-        } else{
-            $this->getClient()->sendMessage($username . ' has just subscribed for the first time !' . $emojis);
+        $isSample = strstr($rawMsg, '@twitchnotify.tmi.twitch.tv PRIVMSG #' . $this->getClient()->getChannel() . ' :');
+
+        if ($isSample != false) {
+            // SAMPLE OLD SCHOOL NOTIFY
+            $message = substr($rawMsg, strlen($this->getClient()->getChannel()) + 39);
+            $username = strstr($message, ' ', true);
+            $this->getClient()->sendMessage($username . ' has just subscribed !' . $emojis);
+        } else {
+            $username = strstr($rawMsg, 'login=');
+            $username = strstr($username, ';', true);
+            $username = str_replace('login=', '', $username);
+
+            $months = strstr($rawMsg, 'msg-param-months=');
+            if ($months != false) {
+                $months = strstr($months, ';', true);
+                $months = str_replace('msg-param-months=', '', $months);
+                if ($months == '1') {
+                    $months = false;
+                }
+            }
+
+            if ($months != false) {
+                $this->getClient()->sendMessage($username . ' has just resub from ' . $months . ' months !' . $emojis);
+            } else {
+                $this->getClient()->sendMessage($username . ' has just subscribed for the first time !' . $emojis);
+            }
         }
 
     }
