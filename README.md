@@ -55,3 +55,7 @@ class Responder {
 6) Update autoload using this command: `composer dumpautoload`
 
 7) Start your bot in screen or tmux for example ! `php bot.php`
+
+
+### Examples:
+https://www.twitch.tv/warths (with custom modules and default)
