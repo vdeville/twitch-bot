@@ -1,6 +1,8 @@
 <?php
 
 namespace TwitchBot;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 
 /**
  * Class ModuleLoader
@@ -48,8 +50,14 @@ class ModuleLoader
      */
     private function getList()
     {
-        $list = scandir(dirname(dirname(__DIR__)) . '/modules/');
-        $list = array_diff($list, array('.', '..'));
+        $list = [];
+        $finder = new Finder();
+        $dirModule = dirname(dirname(__DIR__)) . '/modules/';
+
+        /** @var SplFileInfo $module */
+        foreach ($finder->directories()->in($dirModule) as $module){
+            $list[] = $module->getRelativePathname();
+        }
 
         return $list;
     }
