@@ -16,15 +16,18 @@ class ModuleLoader
 
     private $client;
 
+    private $modulesInstances;
+
     /**
      * ModuleLoader constructor.
      */
     public function __construct($infos, $client)
     {
-        $this->modulesList = $this->getList();
-
         $this->infos = $infos;
         $this->client = $client;
+
+        $this->modulesList = $this->getList();
+        $this->modulesInstances = $this->instancesAllModules();
     }
 
     /**
@@ -36,12 +39,9 @@ class ModuleLoader
      */
     public function hookAction($hook, $data = null)
     {
-        foreach ($this->getModulesList() as $module) {
-            /** @var Module $instance */
-            $module = ucfirst($module);
-            $instance = new $module($this->getInfos(), $this->getClient());
+        foreach ($this->getInstancesModules() as $module) {
             $method = 'on' . $hook;
-            $instance->$method($data);
+            $module->$method($data);
         }
     }
 
@@ -60,6 +60,26 @@ class ModuleLoader
         }
 
         return $list;
+    }
+
+    /**
+     * @return \stdClass[]
+     */
+    public function getInstancesModules(){
+        return $this->modulesInstances;
+    }
+
+    /**
+     * @return array
+     */
+    public function instancesAllModules(){
+        $instances = [];
+        foreach ($this->getModulesList() as $module){
+            $module = ucfirst($module);
+            $instances[$module] = new $module($this->getInfos(), $this->getClient());
+        }
+
+        return $instances;
     }
 
     /**
