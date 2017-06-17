@@ -12,6 +12,10 @@ class Setinfo
 
     private $storage;
 
+    private static $DELAY = 30;
+
+    private $lastGetInfo;
+
     /**
      * Setinfo constructor.
      * @param array $infos
@@ -21,6 +25,7 @@ class Setinfo
     {
         $this->client = $client;
         $this->infos = $infos;
+        $this->lastGetInfo = time() - self::$DELAY;
 
         $this->storage = json_decode(file_get_contents(self::$FILEJSON));
     }
@@ -48,12 +53,7 @@ class Setinfo
                     ($data->getUserType() == 3) ? $this->setInfo($data) : false;
                     break;
                 case 'info':
-                    $explode = explode(' ', $data->getMessage());
-                    if(isset($explode[1])){
-                        $this->getClient()->sendMessage($explode[1] . ', ' . $this->getInfo());
-                    } else{
-                        $this->getClient()->sendMessage($this->getInfo());
-                    }
+                    $this->sendResponse($data->getMessage());
                     break;
                 default:
                     break;
@@ -78,6 +78,44 @@ class Setinfo
         $this->setStorage($storage);
 
         $this->getClient()->sendMessage('New response for !info command');
+    }
+
+    /**
+     * @param $message
+     */
+    public function sendResponse($message){
+
+        $diff = time() - $this->getLastGetInfo();
+
+        if($diff >= self::$DELAY){
+
+            $userToPing = explode(' ', $message);
+            if(isset($userToPing[1])){
+                $this->getClient()->sendMessage($userToPing[1] . ', ' . $this->getInfo());
+            } else{
+                $this->getClient()->sendMessage($this->getInfo());
+            }
+
+            $this->setLastGetInfo(time());
+        }
+
+    }
+
+    /**
+     * @return int
+     */
+    private function getLastGetInfo(){
+        return $this->lastGetInfo;
+    }
+
+    /**
+     * @param $value
+     * @return $this
+     */
+    private function setLastGetInfo($value){
+        $this->lastGetInfo = $value;
+
+        return $this;
     }
 
     /**
