@@ -10,6 +10,8 @@ class Broadcast
 
     private $messages;
 
+    private $currentQuestionNumber;
+
     /**
      * Broadcast constructor.
      * @param array $infos
@@ -21,9 +23,7 @@ class Broadcast
         $this->client = $client;
         $this->infos = $infos;
 
-        if (is_null($this->getSession('questionId'))) {
-            $this->setSession('questionId', 0);
-        }
+        $this->currentQuestionNumber = 0;
     }
 
     public function onConnect()
@@ -46,12 +46,12 @@ class Broadcast
      */
     private function getNextMessage()
     {
-        $message = $this->getMessages($this->getQuestionId());
+        $message = $this->getMessages($this->getCurrentQuestionNumber());
 
-        if ($this->getQuestionId() < $this->getNumberOfMessages() - 1) {
-            $this->setQuestionId($this->getQuestionId() + 1);
+        if ($this->getCurrentQuestionNumber() < $this->getNumberOfMessages() - 1) {
+            $this->setCurrentQuestionNumber($this->getCurrentQuestionNumber() + 1);
         } else {
-            $this->setQuestionId(0);
+            $this->setCurrentQuestionNumber(0);
         }
 
         return $message;
@@ -70,25 +70,6 @@ class Broadcast
     }
 
     /**
-     * @param int $questionId
-     *
-     * @return Broadcast()
-     */
-    public function setQuestionId($questionId)
-    {
-        $this->setSession('questionId', $questionId);
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getQuestionId()
-    {
-        return $this->getSession('questionId');
-    }
-
-    /**
      * @return int
      */
     private function getNumberOfMessages()
@@ -97,27 +78,20 @@ class Broadcast
     }
 
     /**
-     * @param $key
      * @param $value
+     * @return $this
      */
-    private function setSession($key, $value)
-    {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
-        $_SESSION[$key] = $value;
+    private function setCurrentQuestionNumber($value){
+        $this->currentQuestionNumber = $value;
+
+        return $this;
     }
 
     /**
-     * @param $key
-     * @return mixed
+     * @return int
      */
-    private function getSession($key)
-    {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
-        return $_SESSION[$key];
+    private function getCurrentQuestionNumber(){
+        return $this->currentQuestionNumber;
     }
 
 }
