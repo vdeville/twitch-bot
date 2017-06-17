@@ -55,6 +55,7 @@ class Commands {
     }
 
     /**
+     * @param null $key
      * @return mixed
      */
     public function getCommands($key = null)
