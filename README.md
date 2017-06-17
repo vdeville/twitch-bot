@@ -1,5 +1,17 @@
 # Twitch bot in PHP
 
+## Users
+
+### Setup the bot
+1) Launch setup.sh by typing `bash setup.sh`
+2) Edit `bot.php` file and enter your oAuth token, bot name and your channel
+
+### Launch the bot
+1) Launch `launch.sh` by typing `bash launch.sh`
+
+
+## Developpers 
+
 I write this bot to have clean PHP base to create custom Twitch bot in PHP.
 This project use modules system with hooks to add your own features. You can see examples of modules in `/modules` folder.
 
@@ -57,5 +69,5 @@ class Responder {
 7) Start your bot in screen or tmux for example ! `php bot.php`
 
 
-### Examples:
+## Examples:
 https://www.twitch.tv/warths (with custom modules and default)
