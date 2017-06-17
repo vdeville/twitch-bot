@@ -158,7 +158,7 @@ class IrcConnect
                 $toLog = "[ UNKNOW ] " . $msg;
         }
 
-        echo $toLog . PHP_EOL;
+        echo date('[d/m/y G:i:s]') . $toLog . PHP_EOL;
     }
 
     /**
