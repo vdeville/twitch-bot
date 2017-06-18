@@ -7,13 +7,13 @@ function installPhpOrDie() {
         apt-get update
         apt-get install -y php5-cli php5-curl
     else
-        dialog --title "Twitch Bot" --msgbox "PHP is require to use this bot, thanks." 10 78
+        dialog --title "Twitch Bot" --msgbox "PHP is required to use this bot, thanks." 10 78
     fi
 }
 
 # Step 1
 dialog --title "Twitch Bot" --msgbox "
-Welcome to the installer, his check if you have all requirements and configure it's for you.
+Welcome to the installer, it checks if your system passes all requirements and configures the bot for you.
 
 Choose Ok to begin." 10 78
 
@@ -26,7 +26,7 @@ fi
 
 # Step 3
 dialog --title "Twitch Bot" --msgbox "
-Next step download file on getcomposer.org and install localy
+The next step will download composer on getcomposer.org and install it locally
 
 Choose Ok to continue." 10 78
 
@@ -42,4 +42,4 @@ Choose Ok to continue." 10 78
 php composer.phar update &> /dev/null
 
 # Step 5
-dialog --title "Twitch Bot" --msgbox "It' done ! Installation succesfully terminated. You can launch the bot by typing: bash launch.sh in your terminal" 10 78
+dialog --title "Twitch Bot" --msgbox "It' done ! Installation ended successfully. You can launch the bot by typing: bash launch.sh in your terminal" 10 78
