@@ -1,4 +1,4 @@
-# Twitch bot in PHP
+![banner](https://cloud.valentin-deville.eu/index.php/apps/files_sharing/ajax/publicpreview.php?x=2880&y=758&a=true&file=twitch-bot.jpg&t=1K94nCX0UVVJ9Oj&scalingup=0)
 
 ## Users
 
