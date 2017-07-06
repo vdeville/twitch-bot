@@ -19,7 +19,7 @@ class IrcConnect
 
     private $user;
 
-    private $password;
+    private $oauth;
 
     private $nickname;
 
@@ -34,15 +34,15 @@ class IrcConnect
      * @param Int $port
      * @param String $user
      * @param String $channel
-     * @param String null $password
+     * @param String null $oauth
      */
-    public function __construct($address, $port, $user, $channel, $password = null)
+    public function __construct($address, $port, $user, $channel, $oauth = null)
     {
         $this->address = $address;
         $this->port = $port;
         $this->user = $user;
         $this->channel = $channel;
-        $this->password = $password;
+        $this->oauth = $oauth;
 
         $this->nickname = $user;
 
@@ -67,7 +67,7 @@ class IrcConnect
 
         $this->sendRaw('CAP REQ :twitch.tv/tags' . self::$RETURN);
         $this->sendRaw('CAP REQ :twitch.tv/commands'.self::$RETURN);
-        $this->sendRaw('PASS ' . $this->getPassword() . self::$RETURN);
+        $this->sendRaw('PASS ' . $this->getOauth() . self::$RETURN);
         $this->sendRaw('NICK ' . $this->getUser() . self::$RETURN);
         $this->sendRaw('JOIN #' . $this->getChannel() . ' ' . self::$RETURN);
 
@@ -229,9 +229,9 @@ class IrcConnect
     /**
      * @return String
      */
-    public function getPassword()
+    public function getOauth()
     {
-        return $this->password;
+        return $this->oauth;
     }
 
     /**
