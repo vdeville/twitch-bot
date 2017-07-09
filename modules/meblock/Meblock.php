@@ -25,8 +25,10 @@ class Meblock {
     public function onMessage($data)
     {
         if(preg_match("/ACTION/", $data->getOriginalMsg()) && $data->getUserType() < 2){
-            $this->timeout($data->getUsername(), 20);
-            $this->getClient()->sendMessage('@' . $data->getUsername() . ', usage of /me is not permit here.');
+            $this->timeout($data->getUsername(), $this->getConfig('timeout_delay'));
+
+            $message = sprintf($this->getConfig('message'), $data->getUsername());
+            $this->getClient()->sendMessage($message);
         }
     }
 

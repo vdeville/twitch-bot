@@ -1,0 +1,4 @@
+{
+  "timeout_delay": 20,
+  "message": "@%1$s tiemout, /me not authorized here"
+}
