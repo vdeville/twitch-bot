@@ -18,6 +18,10 @@
     "google.fr"
   ],
   "max_lenght": 300,
+  "timeout_blacklistedword": 60,
+  "timeout_link": 120,
+  "timeout_toolong": 30,
+  "timeout_toomanycaps": 45,
   "pourcent_caps": 60,
   "authorized_people": [
     "v_deville"

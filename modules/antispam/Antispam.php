@@ -65,23 +65,23 @@ class Antispam
 
             $isBlacklisted = $this->isBlacklist($message);
             if ($isBlacklisted != false) {
-                $this->timeout($data->getUsername(), 20);
-                $this->getClient()->sendMessage($data->getUsername() . ' banni pour un mot ' . $isBlacklisted);
+                $this->timeout($data->getUsername(), $this->getConfig('timeout_blacklistedword'));
+                $this->getClient()->sendMessage($data->getUsername() . ' timeout for blacklisted word level: ' . $isBlacklisted);
             }
 
             if ($this->asLink($message) AND !$this->isAuthorizedPepopleLink($data->getUsername())) {
-                $this->timeout($data->getUsername(), 20);
-                $this->getClient()->sendMessage($data->getUsername() . ' timeout pour un lien');
+                $this->timeout($data->getUsername(), $this->getConfig('timeout_link'));
+                $this->getClient()->sendMessage($data->getUsername() . ' timeout for link');
             }
 
             if ($this->isTooLong($message)) {
-                $this->timeout($data->getUsername(), 20);
-                $this->getClient()->sendMessage($data->getUsername() . ' timeout, message trop long');
+                $this->timeout($data->getUsername(), $this->getConfig('timeout_toolong'));
+                $this->getClient()->sendMessage($data->getUsername() . ' timeout message too long');
             }
 
             if ($this->tooManyCaps($data->getMessage())) {
-                $this->timeout($data->getUsername(), 20);
-                $this->getClient()->sendMessage($data->getUsername() . ' timeout, too many caps');
+                $this->timeout($data->getUsername(), $this->getConfig('timeout_toomanycaps'));
+                $this->getClient()->sendMessage($data->getUsername() . ' timeout too many caps');
             }
 
         }
