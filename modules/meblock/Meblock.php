@@ -5,7 +5,9 @@
  */
 class Meblock {
 
-    use \TwitchBot\Module;
+    use \TwitchBot\Module {
+        \TwitchBot\Module::__construct as private moduleConstructor;
+    }
 
     /**
      * Meblock constructor.
@@ -14,8 +16,7 @@ class Meblock {
      */
     public function __construct(array $infos, $client)
     {
-        $this->client = $client;
-        $this->infos = $infos;
+        $this->moduleConstructor($infos, $client);
     }
 
     /**

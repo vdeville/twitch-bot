@@ -6,7 +6,9 @@
  */
 class Subhype
 {
-    use \TwitchBot\Module;
+    use \TwitchBot\Module {
+        \TwitchBot\Module::__construct as private moduleConstructor;
+    }
 
     private $config;
 
@@ -17,10 +19,9 @@ class Subhype
      */
     public function __construct(array $infos, $client)
     {
-        $this->config = json_decode(file_get_contents(__DIR__ . '/config.json'), true);
+        $this->moduleConstructor($infos, $client);
 
-        $this->client = $client;
-        $this->infos = $infos;
+        $this->config = json_decode(file_get_contents(__DIR__ . '/config.json'), true);
     }
 
     /**

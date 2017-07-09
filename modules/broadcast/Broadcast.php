@@ -6,7 +6,9 @@
 class Broadcast
 {
 
-    use \TwitchBot\Module;
+    use \TwitchBot\Module {
+        \TwitchBot\Module::__construct as private moduleConstructor;
+    }
 
     private $messages;
 
@@ -19,9 +21,9 @@ class Broadcast
      */
     public function __construct(array $infos, $client)
     {
+        $this->moduleConstructor($infos, $client);
+
         $this->messages = json_decode(file_get_contents(__DIR__ . '/messages.json'), true);
-        $this->client = $client;
-        $this->infos = $infos;
 
         $this->currentQuestionNumber = 0;
     }

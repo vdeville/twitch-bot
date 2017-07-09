@@ -5,7 +5,9 @@
  */
 class Responder {
 
-    use \TwitchBot\Module;
+    use \TwitchBot\Module {
+        \TwitchBot\Module::__construct as private moduleConstructor;
+    }
 
     /**
      * Responder constructor.
@@ -14,8 +16,7 @@ class Responder {
      */
     public function __construct(array $infos, $client)
     {
-        $this->client = $client;
-        $this->infos = $infos;
+        $this->moduleConstructor($infos, $client);
     }
 
     public function onConnect()

@@ -6,7 +6,9 @@
  */
 class Setinfo
 {
-    use \TwitchBot\Module;
+    use \TwitchBot\Module {
+        \TwitchBot\Module::__construct as private moduleConstructor;
+    }
 
     private static $FILEJSON = __DIR__ . '/storage.json';
 
@@ -23,8 +25,8 @@ class Setinfo
      */
     public function __construct(array $infos, $client)
     {
-        $this->client = $client;
-        $this->infos = $infos;
+        $this->moduleConstructor($infos, $client);
+
         $this->lastGetInfo = time() - self::$DELAY;
 
         $this->storage = json_decode(file_get_contents(self::$FILEJSON));

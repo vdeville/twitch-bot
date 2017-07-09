@@ -6,7 +6,9 @@
 class Antispam
 {
 
-    use \TwitchBot\Module;
+    use \TwitchBot\Module {
+        \TwitchBot\Module::__construct as private moduleConstructor;
+    }
 
     private static $CONFIGJSON = __DIR__ . '/config.json';
 
@@ -19,9 +21,9 @@ class Antispam
      */
     public function __construct(array $infos, $client)
     {
+        $this->moduleConstructor($infos, $client);
+
         $this->config = json_decode(file_get_contents(self::$CONFIGJSON), true);
-        $this->client = $client;
-        $this->infos = $infos;
     }
 
     public function onConnect()
