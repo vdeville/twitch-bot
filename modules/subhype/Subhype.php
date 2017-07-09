@@ -10,8 +10,6 @@ class Subhype
         \TwitchBot\Module::__construct as private moduleConstructor;
     }
 
-    private $config;
-
     /**
      * Subhype constructor.
      * @param array $infos
@@ -20,8 +18,6 @@ class Subhype
     public function __construct(array $infos, $client)
     {
         $this->moduleConstructor($infos, $client);
-
-        $this->config = json_decode(file_get_contents(__DIR__ . '/config.json'), true);
     }
 
     /**
@@ -68,13 +64,5 @@ class Subhype
     public function onConnect()
     {
         $this->getClient()->sendMessage('Plugin subhype activate !');
-    }
-
-    /**
-     * @return mixed
-     */
-    private function getConfig($type)
-    {
-        return $this->config[$type];
     }
 }

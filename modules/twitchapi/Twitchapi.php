@@ -10,8 +10,6 @@ class Twitchapi
         \TwitchBot\Module::__construct as private moduleConstructor;
     }
 
-    private $config;
-
     /**
      * Twitchapi constructor.
      * @param array $infos
@@ -20,8 +18,6 @@ class Twitchapi
     public function __construct(array $infos, $client)
     {
         $this->moduleConstructor($infos, $client);
-
-        $this->config = json_decode(file_get_contents(__DIR__ . '/config.json'), true);
     }
 
     /**
@@ -66,13 +62,5 @@ class Twitchapi
         curl_close($ch);
 
         return $return;
-    }
-
-    /**
-     * @return mixed
-     */
-    private function getConfig($type)
-    {
-        return $this->config[$type];
     }
 }

@@ -10,10 +10,6 @@ class Antispam
         \TwitchBot\Module::__construct as private moduleConstructor;
     }
 
-    private static $CONFIGJSON = __DIR__ . '/config.json';
-
-    private $config;
-
     /**
      * Antispam constructor.
      * @param array $infos
@@ -22,8 +18,6 @@ class Antispam
     public function __construct(array $infos, $client)
     {
         $this->moduleConstructor($infos, $client);
-
-        $this->config = json_decode(file_get_contents(self::$CONFIGJSON), true);
     }
 
     public function onConnect()
@@ -93,30 +87,6 @@ class Antispam
         }
 
 
-    }
-
-    /**
-     * @return mixed
-     */
-    private function getConfig($type)
-    {
-        return $this->config[$type];
-    }
-
-    /**
-     * @return mixed
-     */
-    private function setConfig($type, $value)
-    {
-        $config = $this->config;
-
-        foreach ($config as $key => $v) {
-            if ($key == $type) {
-                $this->config[$key] = $value;
-            }
-        }
-
-        file_put_contents(self::$CONFIGJSON, json_encode($this->config));
     }
 
     /**
