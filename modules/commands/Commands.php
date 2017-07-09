@@ -5,7 +5,9 @@
  */
 class Commands {
 
-    use \TwitchBot\Module;
+    use \TwitchBot\Module {
+        \TwitchBot\Module::__construct as private moduleConstructor;
+    }
 
     private $commands;
 
@@ -20,9 +22,9 @@ class Commands {
      */
     public function __construct(array $infos, $client)
     {
+        $this->moduleConstructor($infos, $client);
+
         $this->commands = json_decode(file_get_contents(__DIR__ . '/commands.json'), true);
-        $this->client = $client;
-        $this->infos = $infos;
 
         $this->lastCommands = [];
     }
@@ -56,15 +58,11 @@ class Commands {
 
     /**
      * @param null $key
-     * @return mixed
+     * @return array|string
      */
     public function getCommands($key = null)
     {
         if($key){
-            $command = $this->commands[$key];
-            if($command[0] == '!'){
-                $key = substr($command, 1);
-            }
             return $this->commands[$key];
         } else {
             return $this->commands;
@@ -73,9 +71,28 @@ class Commands {
 
     /**
      * @param $command
+     * @return null|string
+     */
+    public function getRealCommand($command)
+    {
+        if (key_exists($command, $this->getCommands())) {
+            if ($this->getCommands($command)[0] == '!') {
+                return substr($this->getCommands($command), 1);
+            } else {
+                return $command;
+            }
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @param $command
      * @param $userToPing
      */
     public function sendResponse($command, $userToPing){
+
+        $command = $this->getRealCommand($command);
 
         if(isset($this->lastCommands[$command])){
             $time = $this->lastCommands[$command];
