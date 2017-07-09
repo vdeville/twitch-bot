@@ -15,6 +15,17 @@ trait Module
     private $client;
 
     /**
+     * Module constructor.
+     * @param array $infos
+     * @param $client
+     */
+    function __construct(array $infos, $client)
+    {
+        $this->client = $client;
+        $this->infos = $infos;
+    }
+
+    /**
      * Is call when bot is connected to channel
      */
     public function onConnect()
