@@ -79,7 +79,8 @@ class Setinfo
 
         $this->setStorage($storage);
 
-        $this->getClient()->sendMessage('New response for !info command');
+        $message = sprintf($this->getConfig('message_newreply'));
+        $this->getClient()->sendMessage($message);
     }
 
     /**
@@ -93,9 +94,11 @@ class Setinfo
 
             $userToPing = explode(' ', $message);
             if(isset($userToPing[1])){
-                $this->getClient()->sendMessage($userToPing[1] . ', ' . $this->getInfo());
+                $message = sprintf($this->getConfig('message_reply_user'), $userToPing[1], $this->getInfo());
+                $this->getClient()->sendMessage($message);
             } else{
-                $this->getClient()->sendMessage($this->getInfo());
+                $message = sprintf($this->getConfig('message_reply'), $this->getInfo());
+                $this->getClient()->sendMessage($message);
             }
 
             $this->setLastGetInfo(time());
