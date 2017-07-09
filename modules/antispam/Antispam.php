@@ -66,22 +66,26 @@ class Antispam
             $isBlacklisted = $this->isBlacklist($message);
             if ($isBlacklisted != false) {
                 $this->timeout($data->getUsername(), $this->getConfig('timeout_blacklistedword'));
-                $this->getClient()->sendMessage($data->getUsername() . ' timeout for blacklisted word level: ' . $isBlacklisted);
+                $message = sprintf($this->getConfig('message_blacklistedword'), $data->getUsername(), $isBlacklisted);
+                $this->getClient()->sendMessage($message);
             }
 
             if ($this->asLink($message) AND !$this->isAuthorizedPepopleLink($data->getUsername())) {
                 $this->timeout($data->getUsername(), $this->getConfig('timeout_link'));
-                $this->getClient()->sendMessage($data->getUsername() . ' timeout for link');
+                $message = sprintf($this->getConfig('message_timeout_link'), $data->getUsername());
+                $this->getClient()->sendMessage($message);
             }
 
             if ($this->isTooLong($message)) {
                 $this->timeout($data->getUsername(), $this->getConfig('timeout_toolong'));
-                $this->getClient()->sendMessage($data->getUsername() . ' timeout message too long');
+                $message = sprintf($this->getConfig('message_timeout_toolong'), $data->getUsername());
+                $this->getClient()->sendMessage($message);
             }
 
             if ($this->tooManyCaps($data->getMessage())) {
                 $this->timeout($data->getUsername(), $this->getConfig('timeout_toomanycaps'));
-                $this->getClient()->sendMessage($data->getUsername() . ' timeout too many caps');
+                $message = sprintf($this->getConfig('message_timeout_toomanycaps'), $data->getUsername());
+                $this->getClient()->sendMessage($message);
             }
 
         }
@@ -202,9 +206,11 @@ class Antispam
         if (!in_array($user, $storage)) {
             $storage[] = $user;
             $this->setConfig('authorized_people', $storage);
-            $this->getClient()->sendMessage($user . ', is now authorized to post link');
+            $message = sprintf($this->getConfig('message_link_add'), $user);
+            $this->getClient()->sendMessage($message);
         } else {
-            $this->getClient()->sendMessage($user . ', is already authorized to post link');
+            $message = sprintf($this->getConfig('message_link_already_add'), $user);
+            $this->getClient()->sendMessage($message);
         }
     }
 
@@ -221,9 +227,12 @@ class Antispam
         if ($key !== false) {
             unset($storage[$key]);
             $this->setConfig('authorized_people', $storage);
-            $this->getClient()->sendMessage($user . ', is removed from authorized people to post link');
+
+            $message = sprintf($this->getConfig('message_link_remove'), $user);
+            $this->getClient()->sendMessage($message);
         } else {
-            $this->getClient()->sendMessage($user . ', is already not authorized to post link');
+            $message = sprintf($this->getConfig('message_link_already_remove'), $user);
+            $this->getClient()->sendMessage($message);
         }
     }
 
