@@ -24,10 +24,11 @@ class Subhype
     }
 
     /**
-     * @param \TwitchBot\Message $rawMsg
+     * @param \TwitchBot\Message $message
      */
-    public function onUsernotice($rawMsg)
+    public function onUsernotice($message)
     {
+        $rawMsg = $message->getOriginalMsg();
         $emojis = '';
         foreach ($this->getConfig('emotes') as $emoji) {
             $emojis .= ' ' . $emoji;
