@@ -37,7 +37,8 @@ class Subhype
             // SAMPLE OLD SCHOOL NOTIFY
             $message = substr($rawMsg, strlen($this->getClient()->getChannel()) + 39);
             $username = strstr($message, ' ', true);
-            $this->getClient()->sendMessage($username . ' has just subscribed !' . $emojis);
+            $message = sprintf($this->getConfig('message_sub'), $username, $emojis);
+            $this->getClient()->sendMessage($message);
         } else {
             $username = strstr($rawMsg, 'login=');
             $username = strstr($username, ';', true);
@@ -53,9 +54,11 @@ class Subhype
             }
 
             if ($months != false) {
-                $this->getClient()->sendMessage($username . ' has just resub from ' . $months . ' months !' . $emojis);
+                $message = sprintf($this->getConfig('message_resub'), $username, $months, $emojis);
+                $this->getClient()->sendMessage($message);
             } else {
-                $this->getClient()->sendMessage($username . ' has just subscribed for the first time !' . $emojis);
+                $message = sprintf($this->getConfig('message_new_sub'), $username, $emojis);
+                $this->getClient()->sendMessage($message);
             }
         }
 

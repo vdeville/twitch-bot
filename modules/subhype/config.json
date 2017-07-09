@@ -7,5 +7,8 @@
     "Keepo",
     "KappaRoss",
     "KappaClaus"
-  ]
+  ],
+  "message_sub": "%1$s has just subscribe ! %2$s",
+  "message_new_sub": "%1$s has just subscribed for the first time ! %2$s",
+  "message_resub": "%1$s has just resub from %2$s months ! %3$s"
 }
