@@ -14,6 +14,10 @@ trait Module
     /** @var IrcConnect */
     private $client;
 
+    private $config;
+
+    private $configFile;
+
     /**
      * Module constructor.
      * @param array $infos
@@ -23,6 +27,15 @@ trait Module
     {
         $this->client = $client;
         $this->infos = $infos;
+
+        $reflection = new \ReflectionClass(__CLASS__);
+        $moduleDir = dirname($reflection->getFileName());
+
+        $this->configFile = $configFile = $moduleDir . '/config.json';
+
+        if(file_exists($configFile)){
+            $this->config = json_decode(file_get_contents($configFile), true);
+        };
     }
 
     /**
@@ -70,7 +83,7 @@ trait Module
     /**
      * @return String
      */
-    public function getInfo($info)
+    private function getInfo($info)
     {
         return (key_exists($info, $this->infos)) ? $this->infos[$info] : false;
     }
@@ -78,9 +91,33 @@ trait Module
     /**
      * @return IrcConnect
      */
-    public function getClient()
+    private function getClient()
     {
         return $this->client;
+    }
+
+    /**
+     * @return mixed
+     */
+    private function getConfig($key)
+    {
+        return $this->config[$key];
+    }
+
+    /**
+     * @return mixed
+     */
+    private function setConfig($key, $value)
+    {
+        $config = $this->config;
+
+        foreach ($config as $keyConfig => $v) {
+            if ($keyConfig == $key) {
+                $this->config[$keyConfig] = $value;
+            }
+        }
+
+        file_put_contents($this->configFile, json_encode($this->config));
     }
 
 }
