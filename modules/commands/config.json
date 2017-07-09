@@ -1,0 +1,5 @@
+{
+  "delay": 30,
+  "message_replytouser": "%1$s, %2$s",
+  "message_reply": "%1$s"
+}

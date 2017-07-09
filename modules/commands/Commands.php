@@ -11,7 +11,7 @@ class Commands {
 
     private $commands;
 
-    private static $DELAY = 30;
+    private $delay;
 
     private $lastCommands;
 
@@ -26,6 +26,7 @@ class Commands {
 
         $this->commands = json_decode(file_get_contents(__DIR__ . '/commands.json'), true);
 
+        $this->delay = $this->getConfig('delay');
         $this->lastCommands = [];
     }
 
@@ -97,17 +98,19 @@ class Commands {
         if(isset($this->lastCommands[$command])){
             $time = $this->lastCommands[$command];
         } else {
-            $time = time() - self::$DELAY;
+            $time = time() - $this->delay;
         }
 
         $diff = time() - $time;
 
-        if($diff >= self::$DELAY){
+        if($diff >= $this->delay){
 
             if($userToPing != false){
-                $this->getClient()->sendMessage($userToPing . ', ' . $this->getCommands($command));
+                $message = sprintf($this->getConfig('message_replytouser'), $userToPing, $this->getCommands($command));
+                $this->getClient()->sendMessage($message);
             } else {
-                $this->getClient()->sendMessage($this->getCommands($command));
+                $message = sprintf($this->getConfig('message_reply'), $this->getCommands($command));
+                $this->getClient()->sendMessage($message);
             }
 
             $this->lastCommands[$command] = time();
