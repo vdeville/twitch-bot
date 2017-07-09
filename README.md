@@ -37,7 +37,9 @@ This project use modules system with hooks to add your own features. You can see
  */
 class Responder {
 
-    use \TwitchBot\Module;
+    use \TwitchBot\Module {
+        \TwitchBot\Module::__construct as private moduleConstructor;
+    }
 
     /**
      * Responder constructor.
@@ -46,8 +48,7 @@ class Responder {
      */
     public function __construct(array $infos, $client)
     {
-        $this->client = $client;
-        $this->infos = $infos;
+        $this->moduleConstructor($infos, $client);
     }
 
     /**
@@ -68,6 +69,15 @@ class Responder {
 
 7) Start your bot in screen or tmux for example ! `php bot.php`
 
+#### Config system
+
+You can use your own config system like mysql storage but the bot have already config system using json file.
+
+1) Create file `config.json` in your module folder
+
+2) Respect json format
+
+3) You can use `getConfig(), setConfig()` methods in your code
 
 ## Examples:
 https://www.twitch.tv/warths (with custom modules and default)
