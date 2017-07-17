@@ -81,3 +81,5 @@ You can use your own config system like mysql storage but the bot have already c
 
 ## Examples:
 https://www.twitch.tv/warths (with custom modules and default)
+
+If you use this bot on you channel, please let me know ! Contact me on Twitter or by email. (@MyTheValentinus or contact[@]valentin-deville.eu)
