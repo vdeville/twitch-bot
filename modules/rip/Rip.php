@@ -36,10 +36,14 @@ class Rip
                     $this->displayCounter();
                     break;
                 case 'add':
-                    $this->incrementRip();
+                    if($message->getUserType() >= 2){
+                        $this->incrementRip();
+                    }
                     break;
                 case 'reset':
-                    $this->resetRip();
+                    if($message->getUserType() >= 2){
+                        $this->resetRip();
+                    }
                     break;
                 default:
                     break;
