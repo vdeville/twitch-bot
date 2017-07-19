@@ -11,6 +11,8 @@ class Rip
 
     private static $COUNTERFILE = __DIR__ . '/counter.txt';
 
+    private $lastUseAdd;
+
     /**
      * Rip constructor.
      * @param array $infos
@@ -19,6 +21,8 @@ class Rip
     function __construct(array $infos, $client)
     {
         $this->moduleConstructor($infos, $client);
+
+        $this->lastUseAdd = 0;
     }
 
     /**
@@ -70,7 +74,6 @@ class Rip
             $message = sprintf($message, ucfirst($this->getInfo('channel')), $this->getCounter());
         }
 
-
         $this->getClient()->sendMessage($message);
 
         return true;
@@ -81,9 +84,18 @@ class Rip
      */
     private function incrementRip()
     {
+
+        $delay = $this->getConfig('delay_add');
+
+        if(time() - $this->lastUseAdd < $delay){
+            return true;
+        }
+
         $counter = $this->getCounter();
         $counter ++;
         $this->setCounter($counter);
+
+        $this->lastUseAdd = time();
 
         $this->getClient()->sendMessage($this->getConfig('message_increment'));
 
