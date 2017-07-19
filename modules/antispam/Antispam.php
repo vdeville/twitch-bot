@@ -63,29 +63,37 @@ class Antispam
         if ($data->getUserType() < 2) {
             /** viewer & sub */
 
-            $isBlacklisted = $this->isBlacklist($message);
-            if ($isBlacklisted != false) {
-                $this->timeout($data->getUsername(), $this->getConfig('timeout_blacklistedword'));
-                $message = sprintf($this->getConfig('message_blacklistedword'), $data->getUsername(), $isBlacklisted);
-                $this->getClient()->sendMessage($message);
+            if($this->getConfig('enable_blacklisterwords')){
+                $isBlacklisted = $this->isBlacklist($message);
+                if ($isBlacklisted != false) {
+                    $this->timeout($data->getUsername(), $this->getConfig('timeout_blacklistedword'));
+                    $message = sprintf($this->getConfig('message_blacklistedword'), $data->getUsername(), $isBlacklisted);
+                    $this->getClient()->sendMessage($message);
+                }
             }
 
-            if ($this->asLink($message) AND !$this->isAuthorizedPepopleLink($data->getUsername())) {
-                $this->timeout($data->getUsername(), $this->getConfig('timeout_link'));
-                $message = sprintf($this->getConfig('message_timeout_link'), $data->getUsername());
-                $this->getClient()->sendMessage($message);
+            if($this->getConfig('enable_linkdetection')){
+                if ($this->asLink($message) AND !$this->isAuthorizedPepopleLink($data->getUsername())) {
+                    $this->timeout($data->getUsername(), $this->getConfig('timeout_link'));
+                    $message = sprintf($this->getConfig('message_timeout_link'), $data->getUsername());
+                    $this->getClient()->sendMessage($message);
+                }
             }
 
-            if ($this->isTooLong($message)) {
-                $this->timeout($data->getUsername(), $this->getConfig('timeout_toolong'));
-                $message = sprintf($this->getConfig('message_timeout_toolong'), $data->getUsername());
-                $this->getClient()->sendMessage($message);
+            if($this->getConfig('enable_toolong')){
+                if ($this->isTooLong($message)) {
+                    $this->timeout($data->getUsername(), $this->getConfig('timeout_toolong'));
+                    $message = sprintf($this->getConfig('message_timeout_toolong'), $data->getUsername());
+                    $this->getClient()->sendMessage($message);
+                }
             }
 
-            if ($this->tooManyCaps($data->getMessage())) {
-                $this->timeout($data->getUsername(), $this->getConfig('timeout_toomanycaps'));
-                $message = sprintf($this->getConfig('message_timeout_toomanycaps'), $data->getUsername());
-                $this->getClient()->sendMessage($message);
+            if($this->getConfig('enable_toomanycaps')){
+                if ($this->tooManyCaps($data->getMessage())) {
+                    $this->timeout($data->getUsername(), $this->getConfig('timeout_toomanycaps'));
+                    $message = sprintf($this->getConfig('message_timeout_toomanycaps'), $data->getUsername());
+                    $this->getClient()->sendMessage($message);
+                }
             }
 
         }

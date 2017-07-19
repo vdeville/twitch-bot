@@ -23,7 +23,7 @@
   "timeout_link": 120,
   "message_timeout_link": "%1$s was timeout for link publishing",
   "timeout_toolong": 30,
-  "message_toolong": "%1$s was timeout, message too long",
+  "message_timeout_toolong": "%1$s was timeout, message too long",
   "timeout_toomanycaps": 45,
   "message_timeout_toomanycaps": "%1$s was timeout, too many CAPS",
   "pourcent_caps": 60,
@@ -33,5 +33,9 @@
   "message_link_add": "%1$s is now authorized to post link",
   "message_link_already_add": "%1$s is already authorized to post link",
   "message_link_remove": "%1$s is now not able to send link",
-  "message_link_already_remove": "%1$s is already not authorized"
+  "message_link_already_remove": "%1$s is already not authorized",
+  "enable_blacklisterwords": true,
+  "enable_linkdetection": true,
+  "enable_toolong": true,
+  "enable_toomanycaps": true
 }
