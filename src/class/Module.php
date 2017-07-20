@@ -117,7 +117,7 @@ trait Module
             }
         }
 
-        file_put_contents($this->configFile, json_encode($this->config));
+        file_put_contents($this->configFile, json_encode($this->config, JSON_PRETTY_PRINT));
     }
 
 }
