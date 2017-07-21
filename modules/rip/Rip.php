@@ -13,6 +13,8 @@ class Rip
 
     private $lastUseAdd;
 
+    private $lastUse;
+
     /**
      * Rip constructor.
      * @param array $infos
@@ -23,6 +25,7 @@ class Rip
         $this->moduleConstructor($infos, $client);
 
         $this->lastUseAdd = 0;
+        $this->lastUse = 0;
     }
 
     /**
@@ -66,6 +69,12 @@ class Rip
     private function displayCounter()
     {
 
+        $delay = $this->getConfig('delay_use');
+
+        if(time() - $this->lastUse < $delay){
+            return true;
+        }
+
         if ($this->getCounter() == 0) {
             $message = $this->getConfig('message_notdead');
             $message = sprintf($message, ucfirst($this->getInfo('channel')));
@@ -73,6 +82,8 @@ class Rip
             $message = $this->getConfig('message_display');
             $message = sprintf($message, ucfirst($this->getInfo('channel')), $this->getCounter());
         }
+
+        $this->lastUse = time();
 
         $this->getClient()->sendMessage($message);
 
@@ -98,6 +109,7 @@ class Rip
         $this->lastUseAdd = time();
 
         $this->getClient()->sendMessage($this->getConfig('message_increment'));
+        $this->displayCounter();
 
         return true;
     }

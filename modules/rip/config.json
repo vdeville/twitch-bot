@@ -3,5 +3,6 @@
   "message_notdead": "%1$s n'est pas encore mort !",
   "message_reset": "Le score à bien été reset",
   "message_increment": "Le score à bien été incrémenté",
-  "delay_add": 20
+  "delay_add": 20,
+  "delay_use": 30
 }
