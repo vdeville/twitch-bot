@@ -66,6 +66,8 @@ class Subhype
 
     public function onConnect()
     {
-        $this->getClient()->sendMessage('Plugin subhype activate !');
+        if ($this->getInfo('connect_message')) {
+            $this->getClient()->sendMessage('Plugin subhype activate !');
+        }
     }
 }
