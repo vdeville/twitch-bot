@@ -81,32 +81,21 @@ trait Module
     }
 
     /**
-     * @param $info
-     * @param array|null $config
-     * @return String
+     * Is call when someone send message with command symbol (by default !command)
+     *
+     * @param Command $command
      */
-    private function getInfo($info, $config = null)
+    public function onCommand($command)
     {
-        if(is_null($config)){
-            $config = $this->config;
-        }
+    }
 
-        // is in base array?
-        if (array_key_exists($info, $config)) {
-            return $config[$info];
-        }
-
-        // check arrays contained in this array
-        foreach ($config as $element) {
-            if (is_array($element)) {
-                if ($value = $this->getInfo($info, $element)) {
-                    return $value;
-                }
-            }
-
-        }
-
-        return false;
+    /**
+     * @param $info
+     * @return String|false
+     */
+    private function getInfo($info)
+    {
+       $this->getClient()->getConfig($info);
     }
 
     /**

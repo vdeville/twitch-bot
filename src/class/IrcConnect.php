@@ -27,6 +27,8 @@ class IrcConnect
 
     private $moduleLoader;
 
+    private $config;
+
 
     /**
      * IrcConnect constructor.
@@ -44,7 +46,7 @@ class IrcConnect
 
         $this->channelPrettyName = $channel;
 
-        $config = [
+        $this->config = $config = [
             "twitch" => [
                 "address" => $this->getAddress(),
                 "port" => $this->getPort(),
@@ -70,7 +72,7 @@ class IrcConnect
         }
 
         $this->sendRaw('CAP REQ :twitch.tv/tags' . self::$RETURN);
-        $this->sendRaw('CAP REQ :twitch.tv/commands'.self::$RETURN);
+        $this->sendRaw('CAP REQ :twitch.tv/commands' . self::$RETURN);
         $this->sendRaw('PASS ' . $this->getOauth() . self::$RETURN);
         $this->sendRaw('NICK ' . $this->getUser() . self::$RETURN);
         $this->sendRaw('JOIN #' . $this->getChannel() . ' ' . self::$RETURN);
@@ -96,12 +98,15 @@ class IrcConnect
     {
         $connected = true;
 
+        $commandSymbol = $this->getConfig("command_prefix");
+        $commandSymbolLength = strlen($commandSymbol);
+
         while ($connected) {
             $data = fgets($socket);
 
             $return = explode(':', $data);
             if (rtrim($return[0]) == 'PING') {
-                $this->sendRaw('PONG :'.$return[1]);
+                $this->sendRaw('PONG :' . $return[1]);
                 $this->sendToLog('Ping Send !');
                 $this->getModuleLoader()->hookAction('Pong');
                 $this->sendToLog('Hook onPong send !');
@@ -116,17 +121,25 @@ class IrcConnect
                 } else if (preg_match('/^:tmi.twitch.tv/', $data)) {
                     // Information about connection
                 } else if (preg_match('/PRIVMSG/', $data)) {
+
                     $message = $this->sanitizeMsg($data);
 
-                    if(strstr($message->getMessage(), '@'.$this->getBoitNickname())){
-                        $this->sendToLog('Hook onPing send !');
-                        $this->getModuleLoader()->hookAction('Ping', $message);
+                    if (substr($message->getMessage(), 0, $commandSymbolLength) == $commandSymbol) {
+                        $command = $this->sanitizeCommand($data);
+                        $this->sendToLog('Hook onCommand send !');
+                        $this->getModuleLoader()->hookAction('Command', $command);
                     }
 
                     if ($message->getUsername() != $this->getUser()) {
                         $this->sendToLog('Hook onMessage send !');
                         $this->getModuleLoader()->hookAction('Message', $message);
                     }
+
+                    if (strstr($message->getMessage(), '@' . $this->getUser())) {
+                        $this->sendToLog('Hook onPing send !');
+                        $this->getModuleLoader()->hookAction('Ping', $message);
+                    }
+
                 } else if (preg_match('/USERNOTICE/', $data) OR
                     preg_match('/twitchnotify!twitchnotify@twitchnotify.tmi.twitch.tv PRIVMSG #' . $this->getChannel() . '/', $data)
                 ) {
@@ -207,6 +220,50 @@ class IrcConnect
     }
 
     /**
+     * @param $rawMsg
+     * @return Command
+     */
+    public function sanitizeCommand($rawMsg)
+    {
+        $sanitizedMessage = $this->sanitizeMsg($rawMsg);
+
+        $symbol = $this->getConfig("command_prefix");
+
+        $command = new Command($symbol, $sanitizedMessage);
+
+        return $command;
+    }
+
+    /**
+     * @param $key
+     * @param null $array
+     * @return string|false
+     */
+    public function getConfig($key, $array = null)
+    {
+        if (is_null($array)) {
+            $array = $this->config;
+        }
+
+        // is in base array?
+        if (array_key_exists($key, $array)) {
+            return $array[$key];
+        }
+
+        // check arrays contained in this array
+        foreach ($array as $element) {
+            if (is_array($element)) {
+                if ($value = $this->getConfig($key, $element)) {
+                    return $value;
+                }
+            }
+
+        }
+
+        return false;
+    }
+
+    /**
      * @return string
      */
     public function getAddress()
@@ -274,8 +331,9 @@ class IrcConnect
      * @param $string
      * @return string
      */
-    public function removeReturns($string){
-        return str_replace("\r\n",'', $string);
+    public function removeReturns($string)
+    {
+        return str_replace("\r\n", '', $string);
     }
 
 }
