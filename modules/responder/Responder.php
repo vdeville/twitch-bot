@@ -21,7 +21,9 @@ class Responder {
 
     public function onConnect()
     {
-        $this->getClient()->sendMessage('Plugin responder activate !');
+        if ($this->getInfo('connect_message')) {
+            $this->getClient()->sendMessage('Plugin responder activate !');
+        }
     }
 
     /**
