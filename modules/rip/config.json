@@ -1,5 +1,5 @@
 {
-  "message_display": "%1$s, est mort %2$s fois ! NOOBS !",
+  "message_display": "%1$s est mort %2$s fois ! NOOBS !",
   "message_notdead": "%1$s n'est pas encore mort !",
   "message_reset": "Le score à bien été reset",
   "message_increment": "Le score à bien été incrémenté",

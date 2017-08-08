@@ -60,7 +60,7 @@ class Rip
 
     public function onConnect()
     {
-        $this->getClient()->sendMessage("You cannot dead again, your death are counted !");
+        $this->getClient()->sendMessage("Don't die again ! Your deaths are counted !");
     }
 
     /**
