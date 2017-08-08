@@ -144,7 +144,7 @@ class IrcConnect
                     preg_match('/twitchnotify!twitchnotify@twitchnotify.tmi.twitch.tv PRIVMSG #' . $this->getChannel() . '/', $data)
                 ) {
                     $this->sendToLog('Hook onUsernotice send !');
-                    $this->getModuleLoader()->hookAction('Usernotice', $message);
+                    $this->getModuleLoader()->hookAction('Usernotice', $data);
                 }
             }
         }
