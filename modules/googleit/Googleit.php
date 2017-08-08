@@ -36,4 +36,11 @@ class Googleit
             $this->getClient()->sendMessage($message);
         }
     }
+
+    public function onConnect()
+    {
+        if ($this->getInfo('connect_message')) {
+            $this->getClient()->sendMessage('Plugin google\'it activate !');
+        }
+    }
 }
