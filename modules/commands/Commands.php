@@ -32,7 +32,9 @@ class Commands {
 
     public function onConnect()
     {
-        $this->getClient()->sendMessage('Plugin commands activate !');
+        if ($this->getInfo('connect_message')) {
+            $this->getClient()->sendMessage('Plugin commands activate !');
+        }
     }
 
     /**
