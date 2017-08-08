@@ -199,7 +199,7 @@ class IrcConnect
         $isSub = substr($isSub, 11, 1);
         $isSub = boolval($isSub);
 
-        $isBroacaster = ($this->getChannel() == $username) ? true : false;
+        $isBroadcaster = ($this->getChannel() == $username) ? true : false;
 
         /**
          * 0 = viewer
@@ -208,7 +208,7 @@ class IrcConnect
          * 3 = broadcaster
          */
 
-        if ($isBroacaster) $userType = 3;
+        if ($isBroadcaster) $userType = 3;
         elseif ($isMod) $userType = 2;
         elseif ($isSub) $userType = 1;
         else $userType = 0;
