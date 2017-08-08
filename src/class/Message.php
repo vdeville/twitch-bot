@@ -37,11 +37,12 @@ class Message
     }
 
     /**
+     * @param bool $pretty
      * @return string
      */
-    public function getUsername()
+    public function getUsername($pretty = false)
     {
-        return $this->username;
+        return ($pretty) ? $this->username : strtolower($this->username);
     }
 
     /**

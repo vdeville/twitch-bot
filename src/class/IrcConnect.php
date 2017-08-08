@@ -135,7 +135,7 @@ class IrcConnect
                         $this->getModuleLoader()->hookAction('Message', $message);
                     }
 
-                    if (strstr($message->getMessage(), '@' . $this->getUser())) {
+                    if (strstr(strtolower($message->getMessage()), '@' . $this->getUser())) {
                         $this->sendToLog('Hook onPing send !');
                         $this->getModuleLoader()->hookAction('Ping', $message);
                     }
@@ -187,7 +187,6 @@ class IrcConnect
         $username = strstr($rawMsg, 'display-name=');
         $username = strstr($username, ';', true);
         $username = str_replace('display-name=', '', $username);
-        $username = strtolower($username);
 
         $message = strstr($rawMsg, 'PRIVMSG #' . $this->getChannel() . ' :');
         $message = substr($message, 11 + strlen($this->getChannel()));
@@ -280,11 +279,12 @@ class IrcConnect
     }
 
     /**
+     * @param bool $pretty
      * @return string
      */
-    public function getUser()
+    public function getUser($pretty = false)
     {
-        return strtolower($this->user);
+        return ($pretty) ? $this->user : strtolower($this->user);
     }
 
     /**
@@ -304,7 +304,7 @@ class IrcConnect
     }
 
     /**
-     * @param $pretty
+     * @param bool $pretty
      * @return string
      */
     public function getChannel($pretty = false)
