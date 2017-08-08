@@ -1,5 +1,6 @@
 {
   "name": "Commands",
   "description": "This module alllow to add custom command",
-  "author" : ["Valentin Deville"]
+  "author" : ["Valentin Deville"],
+  "others_config": ["commands.json"]
 }
