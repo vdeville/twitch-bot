@@ -52,7 +52,7 @@ class IrcConnect
                 "port" => $this->getPort(),
                 "user" => $this->getUser(),
                 "channel" => $this->getChannel(),
-                "channelPrettyName" => $this->getChannelPrettyName()
+                "channelPrettyName" => $this->getChannel(true)
             ],
             "general" => $config["general"]
         ];
@@ -306,17 +306,10 @@ class IrcConnect
     /**
      * @return string
      */
-    public function getChannel()
+    public function getChannel($pretty = false)
     {
-        return strtolower($this->channel);
-    }
 
-    /**
-     * @return string
-     */
-    public function getChannelPrettyName()
-    {
-        return $this->channelPrettyName;
+        return ($pretty) ? $this->channel : strtolower($this->channel);
     }
 
     /**

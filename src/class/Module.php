@@ -95,7 +95,7 @@ trait Module
      */
     private function getInfo($info)
     {
-       $this->getClient()->getConfig($info);
+       return $this->getClient()->getConfig($info);
     }
 
     /**
