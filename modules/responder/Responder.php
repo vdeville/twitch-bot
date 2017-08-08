@@ -3,7 +3,8 @@
 /**
  * Class Responder
  */
-class Responder {
+class Responder
+{
 
     use \TwitchBot\Module {
         \TwitchBot\Module::__construct as private moduleConstructor;
@@ -31,6 +32,6 @@ class Responder {
      */
     public function onPing($message)
     {
-        $this->getClient()->sendMessage('You ping me @' . $message->getUsername() . ' ?! What do you want ?');
+        $this->getClient()->sendMessage('You ping me @' . $message->getUsername(true) . ' ?! What do you want ?');
     }
 }
