@@ -41,4 +41,11 @@ class Meblock {
         $this->getClient()->sendMessage('.timeout ' . $user . ' ' . $time);
         $this->getClient()->sendToLog('User ' . $user . ' tiemout ' . $time);
     }
+
+    public function onConnect()
+    {
+        if ($this->getInfo('connect_message')) {
+            $this->getClient()->sendMessage('Plugin meblock activate !');
+        }
+    }
 }
