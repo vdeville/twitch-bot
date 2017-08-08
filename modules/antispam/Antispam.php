@@ -22,7 +22,9 @@ class Antispam
 
     public function onConnect()
     {
-        $this->getClient()->sendMessage('Anti spam system is working on !');
+        if ($this->getInfo('connect_message')) {
+            $this->getClient()->sendMessage('Anti spam system is working on !');
+        }
     }
 
     /**
@@ -63,7 +65,7 @@ class Antispam
         if ($data->getUserType() < 2) {
             /** viewer & sub */
 
-            if($this->getConfig('enable_blacklisterwords')){
+            if ($this->getConfig('enable_blacklisterwords')) {
                 $isBlacklisted = $this->isBlacklist($message);
                 if ($isBlacklisted != false) {
                     $this->timeout($data->getUsername(), $this->getConfig('timeout_blacklistedword'));
@@ -72,7 +74,7 @@ class Antispam
                 }
             }
 
-            if($this->getConfig('enable_linkdetection')){
+            if ($this->getConfig('enable_linkdetection')) {
                 if ($this->asLink($message) AND !$this->isAuthorizedPepopleLink($data->getUsername())) {
                     $this->timeout($data->getUsername(), $this->getConfig('timeout_link'));
                     $message = sprintf($this->getConfig('message_timeout_link'), $data->getUsername());
@@ -80,7 +82,7 @@ class Antispam
                 }
             }
 
-            if($this->getConfig('enable_toolong')){
+            if ($this->getConfig('enable_toolong')) {
                 if ($this->isTooLong($message)) {
                     $this->timeout($data->getUsername(), $this->getConfig('timeout_toolong'));
                     $message = sprintf($this->getConfig('message_timeout_toolong'), $data->getUsername());
@@ -88,7 +90,7 @@ class Antispam
                 }
             }
 
-            if($this->getConfig('enable_toomanycaps')){
+            if ($this->getConfig('enable_toomanycaps')) {
                 if ($this->tooManyCaps($data->getMessage())) {
                     $this->timeout($data->getUsername(), $this->getConfig('timeout_toomanycaps'));
                     $message = sprintf($this->getConfig('message_timeout_toomanycaps'), $data->getUsername());
