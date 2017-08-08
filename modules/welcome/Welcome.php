@@ -3,7 +3,8 @@
 /**
  * Class Welcome
  */
-class Welcome {
+class Welcome
+{
 
     use \TwitchBot\Module {
         \TwitchBot\Module::__construct as private moduleConstructor;
@@ -21,6 +22,6 @@ class Welcome {
 
     public function onConnect()
     {
-        $this->getClient()->sendMessage('Welcome every body to '.$this->getInfo('channel').'\'s channel !');
+        $this->getClient()->sendMessage('Welcome every body to ' . $this->getInfo('channelPrettyName') . '\'s channel !');
     }
 }
