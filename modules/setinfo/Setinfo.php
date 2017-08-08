@@ -34,7 +34,9 @@ class Setinfo
 
     public function onConnect()
     {
-        $this->getClient()->sendMessage('Plugin Setinfo activate !');
+        if ($this->getInfo('connect_message')) {
+            $this->getClient()->sendMessage('Plugin Setinfo activate !');
+        }
     }
 
     /**
@@ -94,10 +96,10 @@ class Setinfo
 
             $userToPing = explode(' ', $message);
             if(isset($userToPing[1])){
-                $message = sprintf($this->getConfig('message_reply_user'), $userToPing[1], $this->getInfo());
+                $message = sprintf($this->getConfig('message_reply_user'), $userToPing[1], $this->getInfoMessage());
                 $this->getClient()->sendMessage($message);
             } else{
-                $message = sprintf($this->getConfig('message_reply'), $this->getInfo());
+                $message = sprintf($this->getConfig('message_reply'), $this->getInfoMessage());
                 $this->getClient()->sendMessage($message);
             }
 
@@ -126,7 +128,7 @@ class Setinfo
     /**
      * @return string mixed
      */
-    private function getInfo(){
+    private function getInfoMessage(){
         $storage = $this->getStorage();
         return $storage->message;
     }
