@@ -60,7 +60,9 @@ class Rip
 
     public function onConnect()
     {
-        $this->getClient()->sendMessage("Don't die again ! Your deaths are counted !");
+        if ($this->getInfo('connect_message')) {
+            $this->getClient()->sendMessage("Don't die again ! Your deaths are counted !");
+        }
     }
 
     /**
