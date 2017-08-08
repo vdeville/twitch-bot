@@ -21,37 +21,41 @@ class IrcConnect
 
     private $oauth;
 
-    private $nickname;
-
     private $channel;
+
+    private $channelPrettyName;
 
     private $moduleLoader;
 
 
     /**
      * IrcConnect constructor.
-     * @param String $address
-     * @param Int $port
-     * @param String $user
-     * @param String $channel
-     * @param String null $oauth
+     * @param array $config
      */
-    public function __construct($address, $port, $user, $channel, $oauth = null)
+    public function __construct($config)
     {
-        $this->address = $address;
-        $this->port = $port;
-        $this->user = $user;
-        $this->channel = $channel;
-        $this->oauth = $oauth;
+        $twitchConfig = $config["twitch"];
 
-        $this->nickname = $user;
+        $this->address = $twitchConfig["irc_address"];
+        $this->port = $twitchConfig["port"];
+        $this->user = $twitchConfig["user"];
+        $this->channel = $channel = $twitchConfig["channels"];
+        $this->oauth = $twitchConfig["oauth"];
 
-        $this->moduleLoader = new ModuleLoader([
-            "address" => $this->getAddress(),
-            "port" => $this->getPort(),
-            "user" => $this->getUser(),
-            "channel" => $this->getChannel()
-        ], $this);
+        $this->channelPrettyName = $channel;
+
+        $config = [
+            "twitch" => [
+                "address" => $this->getAddress(),
+                "port" => $this->getPort(),
+                "user" => $this->getUser(),
+                "channel" => $this->getChannel(),
+                "channelPrettyName" => $this->getChannelPrettyName()
+            ],
+            "general" => $config["general"]
+        ];
+
+        $this->moduleLoader = new ModuleLoader($config, $this);
     }
 
     /**
@@ -78,7 +82,7 @@ class IrcConnect
     }
 
     /**
-     * @param String $raw
+     * @param string $raw
      */
     public function sendRaw($raw)
     {
@@ -114,7 +118,7 @@ class IrcConnect
                 } else if (preg_match('/PRIVMSG/', $data)) {
                     $message = $this->sanitizeMsg($data);
 
-                    if(strstr($message->getMessage(), '@'.$this->getNickname())){
+                    if(strstr($message->getMessage(), '@'.$this->getBoitNickname())){
                         $this->sendToLog('Hook onPing send !');
                         $this->getModuleLoader()->hookAction('Ping', $message);
                     }
@@ -134,7 +138,7 @@ class IrcConnect
     }
 
     /**
-     * @param String $msg
+     * @param string $msg
      */
     public function sendMessage($msg)
     {
@@ -142,7 +146,7 @@ class IrcConnect
     }
 
     /**
-     * @param String $msg
+     * @param string $msg
      * @param string $type
      */
     public function sendToLog($msg, $type = 'info')
@@ -203,7 +207,7 @@ class IrcConnect
     }
 
     /**
-     * @return String
+     * @return string
      */
     public function getAddress()
     {
@@ -219,7 +223,7 @@ class IrcConnect
     }
 
     /**
-     * @return String
+     * @return string
      */
     public function getUser()
     {
@@ -227,19 +231,11 @@ class IrcConnect
     }
 
     /**
-     * @return String
+     * @return string
      */
     public function getOauth()
     {
         return $this->oauth;
-    }
-
-    /**
-     * @return String
-     */
-    public function getNickname()
-    {
-        return $this->nickname;
     }
 
     /**
@@ -251,11 +247,19 @@ class IrcConnect
     }
 
     /**
-     * @return String
+     * @return string
      */
     public function getChannel()
     {
         return strtolower($this->channel);
+    }
+
+    /**
+     * @return string
+     */
+    public function getChannelPrettyName()
+    {
+        return $this->channelPrettyName;
     }
 
     /**
