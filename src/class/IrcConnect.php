@@ -304,6 +304,7 @@ class IrcConnect
     }
 
     /**
+     * @param $pretty
      * @return string
      */
     public function getChannel($pretty = false)
