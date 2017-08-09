@@ -39,30 +39,8 @@ class Antispam
          * 3 = broadcaster
          */
 
-        $message = strtolower($data->getMessage());
-
-        if ($data->getMessage()[0] == '!') {
-
-            $command = trim($data->getMessage());
-            $command = substr($command, 1);
-            $command = explode(' ', $command)[0];
-
-            $command = strtolower($command);
-
-            switch ($command) {
-                case 'permitlink':
-                    ($data->getUserType() == 3) ? $this->addPermitPeopleLink($data) : false;
-                    break;
-                case 'permitlinkoff':
-                    ($data->getUserType() == 3) ? $this->removePermitPeopleLink($data) : false;
-                    break;
-                default:
-                    break;
-            }
-
-        }
-
         if ($data->getUserType() < 2) {
+            $message = strtolower($data->getMessage());
             /** viewer & sub */
 
             if ($this->getConfig('enable_blacklisterwords')) {
@@ -100,7 +78,30 @@ class Antispam
 
         }
 
+    }
 
+    /**
+     * @param \TwitchBot\Command $command
+     * @return bool
+     */
+    public function onCommand($command)
+    {
+        if ($command == "permitlink") {
+            $args = $command->getArgs();
+            switch ($args[1]) {
+                case 'on':
+                    return ($command->getMessage()->getUserType() == 3) ? $this->addPermitPeopleLink($args[2]) : false;
+                    break;
+                case 'off':
+                    return ($command->getMessage()->getUserType() == 3) ? $this->removePermitPeopleLink($args[2]) : false;
+                    break;
+                default:
+                    return false;
+                    break;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -113,10 +114,10 @@ class Antispam
             foreach ($words as $word) {
                 if (preg_match('/' . $word . '/', $message)) {
                     return $level;
-                } else {
                 }
             }
         }
+
         return false;
     }
 
@@ -203,15 +204,15 @@ class Antispam
         return false;
     }
 
-    /**
-     * @param \TwitchBot\Message $data
-     */
-    private function addPermitPeopleLink($data)
-    {
 
+    /**
+     * @param $people
+     * @return bool
+     */
+    private function addPermitPeopleLink($people)
+    {
         $storage = $this->getConfig('authorized_people');
-        $user = substr($data->getMessage(), 12);
-        $user = strtolower($user);
+        $user = strtolower($people);
 
         if (!in_array($user, $storage)) {
             $storage[] = $user;
@@ -222,16 +223,18 @@ class Antispam
             $message = sprintf($this->getConfig('message_link_already_add'), $user);
             $this->getClient()->sendMessage($message);
         }
+
+        return true;
     }
 
     /**
-     * @param \TwitchBot\Message $data
+     * @param $people
+     * @return bool
      */
-    private function removePermitPeopleLink($data)
+    private function removePermitPeopleLink($people)
     {
         $storage = $this->getConfig('authorized_people');
-        $user = substr($data->getMessage(), 15);
-        $user = strtolower($user);
+        $user = strtolower($people);
 
         $key = array_search($user, $storage);
         if ($key !== false) {
@@ -244,6 +247,8 @@ class Antispam
             $message = sprintf($this->getConfig('message_link_already_remove'), $user);
             $this->getClient()->sendMessage($message);
         }
+
+        return true;
     }
 
     /**
