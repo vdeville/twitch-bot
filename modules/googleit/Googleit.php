@@ -36,6 +36,8 @@ class Googleit
                 $message = sprintf($this->getConfig('message'), $userToPing, $url);
 
                 $this->getClient()->sendMessage($message);
+            } else {
+                $this->getClient()->sendMessage("Usage for google command: google @Username Your request");
             }
 
         }
