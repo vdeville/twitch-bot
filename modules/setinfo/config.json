@@ -1,4 +1,5 @@
 {
+  "delay_use": 30,
   "message_newreply": "New response for !info command !",
   "message_reply_user": "%1$s, %2$s",
   "message_reply": "%1$s"
