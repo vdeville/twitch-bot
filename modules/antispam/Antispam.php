@@ -86,17 +86,17 @@ class Antispam
      */
     public function onCommand($command)
     {
-        if ($command == "permitlink") {
+        if ($command == "permitlink" AND $command->getMessage()->getUserType() == 3) {
             $args = $command->getArgs();
             switch ($args[1]) {
                 case 'on':
-                    return ($command->getMessage()->getUserType() == 3) ? $this->addPermitPeopleLink($args[2]) : false;
+                    return $this->addPermitPeopleLink($args[2]);
                     break;
                 case 'off':
-                    return ($command->getMessage()->getUserType() == 3) ? $this->removePermitPeopleLink($args[2]) : false;
+                    return $this->removePermitPeopleLink($args[2]);
                     break;
                 default:
-                    return false;
+                    $this->getClient()->sendMessage('Invalid usage for permitlink command. Usage: permitlink on/off username');
                     break;
             }
         }
