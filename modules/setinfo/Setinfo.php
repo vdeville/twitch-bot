@@ -45,8 +45,7 @@ class Setinfo
     {
         if ($command == "setinfo" AND $command->getMessage()->getUserType() == 3) {
 
-            $commandSymbol = $this->getInfo('command_prefix');
-            $info = substr($command->getCommandAndArgsRaw(), strlen($commandSymbol) + 7);
+            $info = substr($command->getCommandAndArgsRaw(), 8);
 
             $this->setInfo($info, $command->getMessage());
 
