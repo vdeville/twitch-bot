@@ -2,9 +2,9 @@
 
 
 /**
- * Class Warthsquote
+ * Class Streamquote
  */
-class Warthsquote
+class Streamquote
 {
     use \TwitchBot\Module {
         \TwitchBot\Module::__construct as private moduleConstructor;
@@ -24,62 +24,57 @@ class Warthsquote
         $this->moduleConstructor($infos, $client);
 
         $storages = json_decode(file_get_contents(self::$FILEJSON));
-        foreach ($storages as $storage){
+
+        foreach ($storages as $storage) {
             $quote = new Quote($storage->quote, $storage->addedBy, $storage->addedAt);
             $this->storage[] = $quote;
         }
     }
 
     /**
-     * @param \TwitchBot\Message $data
+     * @param \TwitchBot\Command $command
+     * @return bool
      */
-    public function onMessage($data)
+    public function onCommand($command)
     {
-        if($data->getMessage()[0] == '!'){
+        if ($command == "quote" AND $command->getMessage()->getUserType() > 0) {
 
-            $command = trim($data->getMessage());
-            $command = substr($command, 1);
-            $command = explode(' ',$command)[0];
+            $this->getQuote();
 
-            $command = strtolower($command);
+        } else if ($command == "addquote" AND $command->getMessage()->getUserType() >= 2) {
+            $quote = substr($command->getCommandAndArgsRaw(), 9);
 
-            switch ($command){
-                case 'addquote':
-                    ($data->getUserType() >= 2) ? $this->addQuote($data) : false;
-                    break;
-                case 'quote':
-                    ($data->getUserType() > 0) ? $this->getQuote() : false;
-                    break;
-                default:
-                    break;
-            }
-
+            $this->addQuote($quote, $command->getMessage());
         }
+
+        return true;
     }
 
     /**
-     * @param \TwitchBot\Message $data
+     * @param string $quote
+     * @param \TwitchBot\Message $message
+     * @internal param \TwitchBot\Message $data
      */
-    private function addQuote($data){
-
+    private function addQuote($quote, $message)
+    {
         $storage = $this->getStorage();
-        $message = substr($data->getMessage(), 10);
 
-        $quote = new Quote($message, $data->getUsername());
+        $quote = new Quote($quote, $message->getUsername(true));
         $storage[] = $quote;
 
         $this->setStorage($storage);
 
-		$message = $this->getConfig('add_quote_message');
+        $message = $this->getConfig('add_quote_message');
         $this->getClient()->sendMessage($message);
     }
 
-    public function getQuote(){
+    public function getQuote()
+    {
         $storage = $this->getStorage();
-        $number = count($storage) -1;
+        $number = count($storage) - 1;
         $random = rand(0, $number);
 
-        $this->getClient()->sendMessage($storage[$random]->getQuote());
+        $this->getClient()->sendMessage($storage[$random]);
     }
 
     /**
@@ -93,7 +88,8 @@ class Warthsquote
     /**
      * @param Quote[] $storage
      */
-    public function setStorage($storage){
+    public function setStorage($storage)
+    {
         $this->storage = $storage;
 
         file_put_contents(self::$FILEJSON, json_encode($storage, JSON_PRETTY_PRINT));
