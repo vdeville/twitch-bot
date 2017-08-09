@@ -3,7 +3,8 @@
 /**
  * Class Commands
  */
-class Commands {
+class Commands
+{
 
     use \TwitchBot\Module {
         \TwitchBot\Module::__construct as private moduleConstructor;
@@ -38,24 +39,21 @@ class Commands {
     }
 
     /**
-     * @param \TwitchBot\Message $data
+     * @param \TwitchBot\Command $command
      */
-    public function onMessage($data)
+    public function onCommand($command)
     {
-        if($data->getMessage()[0] == '!'){
+        $commandName = $command->getCommand();
+        $args = $command->getArgs();
+        $userToPing = false;
 
-            $command = trim($data->getMessage());
-            $command = substr($command, 1);
-            $explode = explode(' ',$command);
-            $command = $explode[0];
-            $userToPing = (isset($explode[1])) ? $explode[1] : false;
-
-            if(key_exists($command, $this->getCommands())){
-                $this->sendResponse($command, $userToPing);
-            } else{
-                $this->getClient()->sendToLog('The command !' . $command . ' is not mapped');
+        if (key_exists($commandName, $this->getCommands())) {
+            if (count($args) == 2) {
+                $userToPing = $args[1];
             }
 
+            $this->sendResponse($commandName, $userToPing);
+            $this->getClient()->sendToLog("Command $commandName was send");
         }
     }
 
@@ -65,7 +63,7 @@ class Commands {
      */
     public function getCommands($key = null)
     {
-        if($key){
+        if ($key) {
             return $this->commands[$key];
         } else {
             return $this->commands;
@@ -79,8 +77,12 @@ class Commands {
     public function getRealCommand($command)
     {
         if (key_exists($command, $this->getCommands())) {
-            if ($this->getCommands($command)[0] == '!') {
-                return substr($this->getCommands($command), 1);
+
+            $commandSymbol = $this->getInfo('command_prefix');
+            $commandSymbolLength = strlen($commandSymbol);
+
+            if (substr($this->getCommands($command), 0, $commandSymbolLength) == $commandSymbol) {
+                return substr($this->getCommands($command), $commandSymbolLength);
             } else {
                 return $command;
             }
@@ -93,11 +95,12 @@ class Commands {
      * @param $command
      * @param $userToPing
      */
-    public function sendResponse($command, $userToPing){
+    public function sendResponse($command, $userToPing)
+    {
 
         $command = $this->getRealCommand($command);
 
-        if(isset($this->lastCommands[$command])){
+        if (isset($this->lastCommands[$command])) {
             $time = $this->lastCommands[$command];
         } else {
             $time = time() - $this->delay;
@@ -105,9 +108,9 @@ class Commands {
 
         $diff = time() - $time;
 
-        if($diff >= $this->delay){
+        if ($diff >= $this->delay) {
 
-            if($userToPing != false){
+            if ($userToPing != false) {
                 $message = sprintf($this->getConfig('message_replytouser'), $userToPing, $this->getCommands($command));
                 $this->getClient()->sendMessage($message);
             } else {
