@@ -37,7 +37,7 @@ class Broadcast
 
     public function onPong()
     {
-        $twitchApi = new Twitchapi($this->infos, $this->getClient());
+        $twitchApi = new Twitchapi($this->config, $this->getClient());
         $livestreamStatus = $twitchApi->getLivestreamStatus();
 
         if ($livestreamStatus == 'online') {
@@ -62,7 +62,8 @@ class Broadcast
     }
 
     /**
-     * @return string|array
+     * @param mixed $key
+     * @return array|string
      */
     public function getMessages($key = null)
     {

@@ -16,7 +16,7 @@ class Quote
      * Quote constructor.
      * @param $quote
      * @param $user
-     * @param DateTime|string $addedAt
+     * @param stdClass|string $addedAt
      */
     public function __construct($quote, $user, $addedAt = 'now')
     {

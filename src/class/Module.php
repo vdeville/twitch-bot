@@ -107,6 +107,7 @@ trait Module
     }
 
     /**
+     * @param $key
      * @return mixed
      */
     private function getConfig($key)
@@ -115,6 +116,8 @@ trait Module
     }
 
     /**
+     * @param $key
+     * @param $value
      * @return mixed
      */
     private function setConfig($key, $value)

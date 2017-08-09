@@ -37,7 +37,7 @@ class Twitchapi
      */
     private function getChannelId($pseudo)
     {
-        $channel = $this->makeRequest('https://api.twitch.tv/kraken/channels/' . $this->getInfo('channel'));
+        $channel = $this->makeRequest('https://api.twitch.tv/kraken/channels/' . $pseudo);
         $channel = json_decode($channel);
 
         return $channel->_id;
