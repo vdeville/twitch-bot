@@ -160,6 +160,14 @@ class IrcConnect
 
     /**
      * @param string $msg
+     */
+    public function sendMe($msg)
+    {
+        $this->sendMessage("/me " . $msg);
+    }
+
+    /**
+     * @param string $msg
      * @param string $type
      */
     public function sendToLog($msg, $type = 'info')
