@@ -28,6 +28,14 @@ class Rip
         $this->lastUse = 0;
     }
 
+    public function onConnect()
+    {
+        if ($this->getInfo('connect_message')) {
+            $this->getClient()->sendMessage("Don't die again ! Your deaths are counted !");
+        }
+    }
+
+    
     /**
      * @param \TwitchBot\Command $command
      * @return bool
@@ -58,13 +66,6 @@ class Rip
         }
 
         return true;
-    }
-
-    public function onConnect()
-    {
-        if ($this->getInfo('connect_message')) {
-            $this->getClient()->sendMessage("Don't die again ! Your deaths are counted !");
-        }
     }
 
     /**

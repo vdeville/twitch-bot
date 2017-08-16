@@ -23,6 +23,6 @@ class Welcome
     public function onConnect()
     {
         $this->getClient()->sendMe("is a bot created by Valentin Deville, his source code is available here: https://github.com/MyTheValentinus/twitch-bot");
-        $this->getClient()->sendMessage('Welcome every body to ' . $this->getInfo('channelPrettyName') . '\'s channel !');
+        $this->getClient()->sendMessage('Welcome everyone to ' . $this->getInfo('channel') . '\'s channel !');
     }
 }

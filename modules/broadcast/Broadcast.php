@@ -31,7 +31,7 @@ class Broadcast
     public function onConnect()
     {
         if ($this->getInfo('connect_message')) {
-            $this->getClient()->sendMessage('Plugin broadcast activate !');
+            $this->getClient()->sendMessage('Broadcast Plugin activated !');
         }
     }
 

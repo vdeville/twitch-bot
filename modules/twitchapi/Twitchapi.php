@@ -20,6 +20,11 @@ class Twitchapi
         $this->moduleConstructor($infos, $client);
     }
 
+    public function onConnect()
+    {
+        $this->getClient()->sendMessage('TwitchAPI plugin activated !');
+    }
+    
     /**
      * @return string
      */

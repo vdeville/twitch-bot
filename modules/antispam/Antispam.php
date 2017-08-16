@@ -23,7 +23,7 @@ class Antispam
     public function onConnect()
     {
         if ($this->getInfo('connect_message')) {
-            $this->getClient()->sendMessage('Anti spam system is working on !');
+           $this->getClient()->sendMessage('Antispam system is working on !');
         }
     }
 
