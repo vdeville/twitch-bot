@@ -12,7 +12,7 @@ class ModuleLoader
 {
     private $modulesList;
 
-    private $infos;
+    private $config;
 
     private $client;
 
@@ -20,10 +20,12 @@ class ModuleLoader
 
     /**
      * ModuleLoader constructor.
+     * @param array $config
+     * @param IrcConnect $client
      */
-    public function __construct($infos, $client)
+    public function __construct($config, $client)
     {
-        $this->infos = $infos;
+        $this->config = $config;
         $this->client = $client;
 
         $this->modulesList = $this->getList();
@@ -76,7 +78,7 @@ class ModuleLoader
         $instances = [];
         foreach ($this->getModulesList() as $module){
             $module = ucfirst($module);
-            $instances[$module] = new $module($this->getInfos(), $this->getClient());
+            $instances[$module] = new $module($this->getConfig(), $this->getClient());
         }
 
         return $instances;
@@ -93,9 +95,9 @@ class ModuleLoader
     /**
      * @return array
      */
-    public function getInfos()
+    public function getConfig()
     {
-        return $this->infos;
+        return $this->config;
     }
 
     /**

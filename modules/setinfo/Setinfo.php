@@ -14,8 +14,6 @@ class Setinfo
 
     private $storage;
 
-    private static $DELAY = 30;
-
     private $lastGetInfo;
 
     /**
@@ -27,55 +25,55 @@ class Setinfo
     {
         $this->moduleConstructor($infos, $client);
 
-        $this->lastGetInfo = time() - self::$DELAY;
+        $this->lastGetInfo = time() - $this->getConfig("delay_use");
 
         $this->storage = json_decode(file_get_contents(self::$FILEJSON));
     }
 
     public function onConnect()
     {
-        $this->getClient()->sendMessage('Info plugin Activated !');
-    }
-
-    /**
-     * @param \TwitchBot\Message $data
-     */
-    public function onMessage($data)
-    {
-        if($data->getMessage()[0] == '!'){
-
-            $command = trim($data->getMessage());
-            $command = substr($command, 1);
-            $command = explode(' ',$command)[0];
-
-            $command = strtolower($command);
-
-            switch ($command){
-                case 'setinfo':
-                    ($data->getUserType() == 3) ? $this->setInfo($data) : false;
-                    break;
-                case 'info':
-                    $this->sendResponse($data->getMessage());
-                    break;
-                default:
-                    break;
-            }
-
+        if ($this->getInfo('connect_message')) {
+            $this->getClient()->sendMessage('Info plugin Activated !');
         }
     }
 
     /**
-     * @param \TwitchBot\Message $data
+     * @param \TwitchBot\Command $command
+     * @return bool
      */
-    private function setInfo($data){
+    public function onCommand($command)
+    {
+        if ($command == "setinfo" AND $command->getMessage()->getUserType() == 3) {
+
+            $info = substr($command->getCommandAndArgsRaw(), 8);
+
+            $this->setInfo($info, $command->getMessage());
+
+        } else if ($command == "info") {
+
+            $args = $command->getArgs();
+            $userToPing = (isset($args[1])) ? $args[1] : false;
+
+            $this->sendResponse($userToPing);
+        }
+
+        return true;
+    }
+
+
+    /**
+     * @param string $info
+     * @param \TwitchBot\Message $message
+     */
+    private function setInfo($info, $message)
+    {
 
         $storage = $this->getStorage();
-        $message = substr($data->getMessage(), 9);
 
-        $storage->message = $message;
+        $storage->message = $info;
 
-        $storage->setBy = $data->getUsername();
-        $storage->setAt = $data->getDate()->format('Y-m-d H:i:s');
+        $storage->setBy = $message->getUsername();
+        $storage->setAt = $message->getDate()->format('Y-m-d H:i:s');
 
         $this->setStorage($storage);
 
@@ -84,23 +82,22 @@ class Setinfo
     }
 
     /**
-     * @param $message
+     * @param bool|string $userToPing
      */
-    public function sendResponse($message){
+    public function sendResponse($userToPing = false)
+    {
 
         $diff = time() - $this->getLastGetInfo();
 
-        if($diff >= self::$DELAY){
+        if ($diff >= $this->getConfig("delay_use")) {
 
-            $userToPing = explode(' ', $message);
-            if(isset($userToPing[1])){
-                $message = sprintf($this->getConfig('message_reply_user'), $userToPing[1], $this->getInfo());
-                $this->getClient()->sendMessage($message);
-            } else{
-                $message = sprintf($this->getConfig('message_reply'), $this->getInfo());
-                $this->getClient()->sendMessage($message);
+            if ($userToPing) {
+                $message = sprintf($this->getConfig('message_reply_user'), $userToPing, $this->getInfoMessage());
+            } else {
+                $message = sprintf($this->getConfig('message_reply'), $this->getInfoMessage());
             }
 
+            $this->getClient()->sendMessage($message);
             $this->setLastGetInfo(time());
         }
 
@@ -109,7 +106,8 @@ class Setinfo
     /**
      * @return int
      */
-    private function getLastGetInfo(){
+    private function getLastGetInfo()
+    {
         return $this->lastGetInfo;
     }
 
@@ -117,7 +115,8 @@ class Setinfo
      * @param $value
      * @return $this
      */
-    private function setLastGetInfo($value){
+    private function setLastGetInfo($value)
+    {
         $this->lastGetInfo = $value;
 
         return $this;
@@ -126,7 +125,8 @@ class Setinfo
     /**
      * @return string mixed
      */
-    private function getInfo(){
+    private function getInfoMessage()
+    {
         $storage = $this->getStorage();
         return $storage->message;
     }
@@ -142,7 +142,8 @@ class Setinfo
     /**
      * @param stdClass $storage
      */
-    public function setStorage($storage){
+    public function setStorage($storage)
+    {
         file_put_contents(self::$FILEJSON, json_encode($storage));
     }
 

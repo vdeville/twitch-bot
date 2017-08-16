@@ -21,37 +21,43 @@ class IrcConnect
 
     private $oauth;
 
-    private $nickname;
-
     private $channel;
 
+    private $channelPrettyName;
+
     private $moduleLoader;
+
+    private $config;
 
 
     /**
      * IrcConnect constructor.
-     * @param String $address
-     * @param Int $port
-     * @param String $user
-     * @param String $channel
-     * @param String null $oauth
+     * @param array $config
      */
-    public function __construct($address, $port, $user, $channel, $oauth = null)
+    public function __construct($config)
     {
-        $this->address = $address;
-        $this->port = $port;
-        $this->user = $user;
-        $this->channel = $channel;
-        $this->oauth = $oauth;
+        $twitchConfig = $config["twitch"];
 
-        $this->nickname = $user;
+        $this->address = $twitchConfig["irc_address"];
+        $this->port = $twitchConfig["port"];
+        $this->user = $twitchConfig["user"];
+        $this->channel = $channel = $twitchConfig["channels"];
+        $this->oauth = $twitchConfig["oauth"];
 
-        $this->moduleLoader = new ModuleLoader([
-            "address" => $this->getAddress(),
-            "port" => $this->getPort(),
-            "user" => $this->getUser(),
-            "channel" => $this->getChannel()
-        ], $this);
+        $this->channelPrettyName = $channel;
+
+        $this->config = $config = [
+            "twitch" => [
+                "address" => $this->getAddress(),
+                "port" => $this->getPort(),
+                "user" => $this->getUser(),
+                "channel" => $this->getChannel(),
+                "channelPrettyName" => $this->getChannel(true)
+            ],
+            "general" => $config["general"]
+        ];
+
+        $this->moduleLoader = new ModuleLoader($config, $this);
     }
 
     /**
@@ -66,7 +72,7 @@ class IrcConnect
         }
 
         $this->sendRaw('CAP REQ :twitch.tv/tags' . self::$RETURN);
-        $this->sendRaw('CAP REQ :twitch.tv/commands'.self::$RETURN);
+        $this->sendRaw('CAP REQ :twitch.tv/commands' . self::$RETURN);
         $this->sendRaw('PASS ' . $this->getOauth() . self::$RETURN);
         $this->sendRaw('NICK ' . $this->getUser() . self::$RETURN);
         $this->sendRaw('JOIN #' . $this->getChannel() . ' ' . self::$RETURN);
@@ -78,7 +84,7 @@ class IrcConnect
     }
 
     /**
-     * @param String $raw
+     * @param string $raw
      */
     public function sendRaw($raw)
     {
@@ -92,12 +98,15 @@ class IrcConnect
     {
         $connected = true;
 
+        $commandSymbol = $this->getConfig("command_prefix");
+        $commandSymbolLength = strlen($commandSymbol);
+
         while ($connected) {
             $data = fgets($socket);
 
             $return = explode(':', $data);
             if (rtrim($return[0]) == 'PING') {
-                $this->sendRaw('PONG :'.$return[1]);
+                $this->sendRaw('PONG :' . $return[1]);
                 $this->sendToLog('Ping Send !');
                 $this->getModuleLoader()->hookAction('Pong');
                 $this->sendToLog('Hook onPong send !');
@@ -112,29 +121,37 @@ class IrcConnect
                 } else if (preg_match('/^:tmi.twitch.tv/', $data)) {
                     // Information about connection
                 } else if (preg_match('/PRIVMSG/', $data)) {
+
                     $message = $this->sanitizeMsg($data);
 
-                    if(strstr($message->getMessage(), '@'.$this->getNickname())){
-                        $this->sendToLog('Hook onPing send !');
-                        $this->getModuleLoader()->hookAction('Ping', $message);
+                    if (substr($message->getMessage(), 0, $commandSymbolLength) == $commandSymbol) {
+                        $command = $this->sanitizeCommand($data);
+                        $this->sendToLog('Hook onCommand send !');
+                        $this->getModuleLoader()->hookAction('Command', $command);
                     }
 
                     if ($message->getUsername() != $this->getUser()) {
                         $this->sendToLog('Hook onMessage send !');
                         $this->getModuleLoader()->hookAction('Message', $message);
                     }
+
+                    if (strstr(strtolower($message->getMessage()), '@' . $this->getUser())) {
+                        $this->sendToLog('Hook onPing send !');
+                        $this->getModuleLoader()->hookAction('Ping', $message);
+                    }
+
                 } else if (preg_match('/USERNOTICE/', $data) OR
                     preg_match('/twitchnotify!twitchnotify@twitchnotify.tmi.twitch.tv PRIVMSG #' . $this->getChannel() . '/', $data)
                 ) {
                     $this->sendToLog('Hook onUsernotice send !');
-                    $this->getModuleLoader()->hookAction('Usernotice', $message);
+                    $this->getModuleLoader()->hookAction('Usernotice', $data);
                 }
             }
         }
     }
 
     /**
-     * @param String $msg
+     * @param string $msg
      */
     public function sendMessage($msg)
     {
@@ -142,7 +159,15 @@ class IrcConnect
     }
 
     /**
-     * @param String $msg
+     * @param string $msg
+     */
+    public function sendMe($msg)
+    {
+        $this->sendMessage("/me " . $msg);
+    }
+
+    /**
+     * @param string $msg
      * @param string $type
      */
     public function sendToLog($msg, $type = 'info')
@@ -170,7 +195,6 @@ class IrcConnect
         $username = strstr($rawMsg, 'display-name=');
         $username = strstr($username, ';', true);
         $username = str_replace('display-name=', '', $username);
-        $username = strtolower($username);
 
         $message = strstr($rawMsg, 'PRIVMSG #' . $this->getChannel() . ' :');
         $message = substr($message, 11 + strlen($this->getChannel()));
@@ -183,7 +207,7 @@ class IrcConnect
         $isSub = substr($isSub, 11, 1);
         $isSub = boolval($isSub);
 
-        $isBroacaster = ($this->getChannel() == $username) ? true : false;
+        $isBroadcaster = ($this->getChannel(true) == $username) ? true : false;
 
         /**
          * 0 = viewer
@@ -192,7 +216,7 @@ class IrcConnect
          * 3 = broadcaster
          */
 
-        if ($isBroacaster) $userType = 3;
+        if ($isBroadcaster) $userType = 3;
         elseif ($isMod) $userType = 2;
         elseif ($isSub) $userType = 1;
         else $userType = 0;
@@ -203,7 +227,51 @@ class IrcConnect
     }
 
     /**
-     * @return String
+     * @param $rawMsg
+     * @return Command
+     */
+    public function sanitizeCommand($rawMsg)
+    {
+        $sanitizedMessage = $this->sanitizeMsg($rawMsg);
+
+        $symbol = $this->getConfig("command_prefix");
+
+        $command = new Command($symbol, $sanitizedMessage);
+
+        return $command;
+    }
+
+    /**
+     * @param $key
+     * @param null $array
+     * @return string|false
+     */
+    public function getConfig($key, $array = null)
+    {
+        if (is_null($array)) {
+            $array = $this->config;
+        }
+
+        // is in base array?
+        if (array_key_exists($key, $array)) {
+            return $array[$key];
+        }
+
+        // check arrays contained in this array
+        foreach ($array as $element) {
+            if (is_array($element)) {
+                if ($value = $this->getConfig($key, $element)) {
+                    return $value;
+                }
+            }
+
+        }
+
+        return false;
+    }
+
+    /**
+     * @return string
      */
     public function getAddress()
     {
@@ -219,27 +287,20 @@ class IrcConnect
     }
 
     /**
-     * @return String
+     * @param bool $pretty
+     * @return string
      */
-    public function getUser()
+    public function getUser($pretty = false)
     {
-        return strtolower($this->user);
+        return ($pretty) ? $this->user : strtolower($this->user);
     }
 
     /**
-     * @return String
+     * @return string
      */
     public function getOauth()
     {
         return $this->oauth;
-    }
-
-    /**
-     * @return String
-     */
-    public function getNickname()
-    {
-        return $this->nickname;
     }
 
     /**
@@ -251,11 +312,13 @@ class IrcConnect
     }
 
     /**
-     * @return String
+     * @param bool $pretty
+     * @return string
      */
-    public function getChannel()
+    public function getChannel($pretty = false)
     {
-        return strtolower($this->channel);
+
+        return ($pretty) ? $this->channel : strtolower($this->channel);
     }
 
     /**
@@ -270,8 +333,9 @@ class IrcConnect
      * @param $string
      * @return string
      */
-    public function removeReturns($string){
-        return str_replace("\r\n",'', $string);
+    public function removeReturns($string)
+    {
+        return str_replace("\r\n", '', $string);
     }
 
 }

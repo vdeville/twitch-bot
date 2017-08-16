@@ -1,0 +1,5 @@
+{
+  "name": "Stream quote",
+  "description": "Add addquote quote command. Thanks to @Warths he accepted to contribute and publish this private module",
+  "author" : ["Valentin Deville"]
+}

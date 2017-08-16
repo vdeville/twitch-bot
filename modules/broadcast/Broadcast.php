@@ -30,15 +30,17 @@ class Broadcast
 
     public function onConnect()
     {
-        $this->getClient()->sendMessage('Broadcast Plugin activated !');
+        if ($this->getInfo('connect_message')) {
+            $this->getClient()->sendMessage('Broadcast Plugin activated !');
+        }
     }
 
     public function onPong()
     {
-        $twitchApi = new Twitchapi($this->infos, $this->getClient());
+        $twitchApi = new Twitchapi($this->config, $this->getClient());
         $livestreamStatus = $twitchApi->getLivestreamStatus();
 
-        if($livestreamStatus == 'online'){
+        if ($livestreamStatus == 'online') {
             $this->getClient()->sendMessage($this->getNextMessage());
         }
     }
@@ -60,7 +62,8 @@ class Broadcast
     }
 
     /**
-     * @return string|array
+     * @param mixed $key
+     * @return array|string
      */
     public function getMessages($key = null)
     {
@@ -83,7 +86,8 @@ class Broadcast
      * @param $value
      * @return $this
      */
-    private function setCurrentQuestionNumber($value){
+    private function setCurrentQuestionNumber($value)
+    {
         $this->currentQuestionNumber = $value;
 
         return $this;
@@ -92,7 +96,8 @@ class Broadcast
     /**
      * @return int
      */
-    private function getCurrentQuestionNumber(){
+    private function getCurrentQuestionNumber()
+    {
         return $this->currentQuestionNumber;
     }
 

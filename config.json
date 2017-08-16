@@ -1,9 +1,13 @@
 {
   "twitch": {
     "user": "",
-    "oauth": "",
+    "oauth": "oauth:",
     "irc_address": "irc.chat.twitch.tv",
     "port": "6667",
-    "channels": "v_deville"
+    "channels": "ValentinDeville"
+  },
+  "general": {
+    "command_prefix": "!",
+    "onConnectMessage": true
   }
 }

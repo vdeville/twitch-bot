@@ -25,20 +25,32 @@ class Googleit
     }
     
     /**
-     * @param \TwitchBot\Message $message
+     * @param \TwitchBot\Command $command
      */
-    public function onMessage($message)
+    public function onCommand($command)
     {
-        if(substr($message->getMessage(), 0, 7) == '!google'){
+        if($command == "google"){
 
-            $userToPing = explode(' ', $message->getMessage())[1];
+            $args = $command->getArgs();
+            if (count($args) > 2){
+                $userToPing = $args[1];
 
-            $request = substr($message->getMessage(), 9 + strlen($userToPing));
-            $url = "http://www.letmegooglethat.com/?q=" . urlencode($request);
+                $request = substr($command->getMessage()->getMessage(), 9 + strlen($userToPing));
+                $url = "http://www.letmegooglethat.com/?q=" . urlencode($request);
 
-            $message = sprintf($this->getConfig('message'), $userToPing, $url);
+                $message = sprintf($this->getConfig('message'), $userToPing, $url);
 
-            $this->getClient()->sendMessage($message);
+                $this->getClient()->sendMessage($message);
+            } else {
+                $this->getClient()->sendMessage("Usage for google command: google @Username Your request");
+            }
+
+        }
+    }
+    public function onConnect()
+    {
+        if ($this->getInfo('connect_message')) {
+            $this->getClient()->sendMessage('Plugin google\'it activate !');
         }
     }
 }

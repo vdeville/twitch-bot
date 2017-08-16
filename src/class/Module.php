@@ -9,33 +9,33 @@ namespace TwitchBot;
 trait Module
 {
 
-    private $infos;
+    private $config;
 
     /** @var IrcConnect */
     private $client;
 
-    private $config;
+    private $configModule;
 
-    private $configFile;
+    private $configModuleFile;
 
     /**
      * Module constructor.
-     * @param array $infos
+     * @param array $config
      * @param $client
      */
-    function __construct(array $infos, $client)
+    function __construct(array $config, $client)
     {
         $this->client = $client;
-        $this->infos = $infos;
+        $this->config = $config;
 
         $reflection = new \ReflectionClass(__CLASS__);
         $moduleDir = dirname($reflection->getFileName());
 
-        $this->configFile = $configFile = $moduleDir . '/config.json';
+        $this->configModuleFile = $configModuleFile = $moduleDir . '/config.json';
 
-        if(file_exists($configFile)){
-            $this->config = json_decode(file_get_contents($configFile), true);
-        };
+        if (file_exists($configModuleFile)) {
+            $this->configModule = json_decode(file_get_contents($configModuleFile), true);
+        }
     }
 
     /**
@@ -81,11 +81,21 @@ trait Module
     }
 
     /**
-     * @return String
+     * Is call when someone send message with command symbol (by default !command)
+     *
+     * @param Command $command
+     */
+    public function onCommand($command)
+    {
+    }
+
+    /**
+     * @param $info
+     * @return String|false
      */
     private function getInfo($info)
     {
-        return (key_exists($info, $this->infos)) ? $this->infos[$info] : false;
+       return $this->getClient()->getConfig($info);
     }
 
     /**
@@ -97,27 +107,30 @@ trait Module
     }
 
     /**
+     * @param $key
      * @return mixed
      */
     private function getConfig($key)
     {
-        return $this->config[$key];
+        return $this->configModule[$key];
     }
 
     /**
+     * @param $key
+     * @param $value
      * @return mixed
      */
     private function setConfig($key, $value)
     {
-        $config = $this->config;
+        $config = $this->configModule;
 
         foreach ($config as $keyConfig => $v) {
             if ($keyConfig == $key) {
-                $this->config[$keyConfig] = $value;
+                $this->configModule[$keyConfig] = $value;
             }
         }
 
-        file_put_contents($this->configFile, json_encode($this->config, JSON_PRETTY_PRINT));
+        return file_put_contents($this->configModuleFile, json_encode($this->configModule, JSON_PRETTY_PRINT));
     }
 
 }

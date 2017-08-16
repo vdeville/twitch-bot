@@ -21,6 +21,7 @@ This project use modules system with hooks to add your own features. You can see
 * onPing (Execute when someone mention the bot (Ex: @YourBot))
 * onPong (Execute every 5 minutes when Twitch send PING status)
 * onUsernotice (Execute when user subscribe for example)
+* onCommand (Execute when someone send message with command symbol, by default `!`)
 
 ### Write module
 

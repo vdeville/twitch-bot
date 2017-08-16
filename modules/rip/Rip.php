@@ -30,40 +30,43 @@ class Rip
 
     public function onConnect()
     {
-        $this->getClient()->sendMessage("Don't die again, your deaths are counted !");
+        if ($this->getInfo('connect_message')) {
+            $this->getClient()->sendMessage("Don't die again ! Your deaths are counted !");
+        }
     }
 
     
     /**
-     * @param \TwitchBot\Message $message
+     * @param \TwitchBot\Command $command
+     * @return bool
      */
-    public function onMessage($message)
+    public function onCommand($command)
     {
-        if (substr($message->getMessage(), 0, 4) == '!rip') {
+        if ($command == "rip") {
 
-            $function = explode(' ', $message->getMessage());
-            $function = isset($function[1]) ? $function[1] : null;
+            $args = $command->getArgs();
 
-            switch ($function) {
-                case null:
-                    $this->displayCounter();
-                    break;
-                case 'add':
-                    if($message->getUserType() >= 2){
+            if (isset($args[1]) AND $command->getMessage()->getUserType() >= 2) {
+
+                switch ($args[1]) {
+                    case 'add':
                         $this->incrementRip();
-                    }
-                    break;
-                case 'reset':
-                    if($message->getUserType() >= 2){
+                        break;
+                    case 'reset':
                         $this->resetRip();
-                    }
-                    break;
-                default:
-                    break;
+                        break;
+                    default:
+                        $this->getClient()->sendMessage('Invalid usage for rip command. Usage: rip add/reset');
+                        break;
+                }
+
+            } else {
+                $this->displayCounter();
             }
         }
-    }
 
+        return true;
+    }
 
     /**
      * @return bool
@@ -73,7 +76,7 @@ class Rip
 
         $delay = $this->getConfig('delay_use');
 
-        if(time() - $this->lastUse < $delay){
+        if (time() - $this->lastUse < $delay) {
             return true;
         }
 
@@ -100,12 +103,12 @@ class Rip
 
         $delay = $this->getConfig('delay_add');
 
-        if(time() - $this->lastUseAdd < $delay){
+        if (time() - $this->lastUseAdd < $delay) {
             return true;
         }
 
         $counter = $this->getCounter();
-        $counter ++;
+        $counter++;
         $this->setCounter($counter);
 
         $this->lastUseAdd = time();
