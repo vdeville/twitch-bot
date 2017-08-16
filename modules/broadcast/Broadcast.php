@@ -30,7 +30,7 @@ class Broadcast
 
     public function onConnect()
     {
-        $this->getClient()->sendMessage('Plugin broadcast activate !');
+        $this->getClient()->sendMessage('Broadcast Plugin activated !');
     }
 
     public function onPong()
