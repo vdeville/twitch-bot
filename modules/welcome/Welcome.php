@@ -21,6 +21,6 @@ class Welcome {
 
     public function onConnect()
     {
-        $this->getClient()->sendMessage('Welcome every body to '.$this->getInfo('channel').'\'s channel !');
+        $this->getClient()->sendMessage('Welcome everyone to '.$this->getInfo('channel').'\'s channel !');
     }
 }
