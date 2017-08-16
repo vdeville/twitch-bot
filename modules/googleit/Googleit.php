@@ -19,6 +19,11 @@ class Googleit
         $this->moduleConstructor($infos, $client);
     }
 
+    public function onConnect()
+    {
+        $this->getClient()->sendMessage('GoogleIt Plugin activated!');
+    }
+    
     /**
      * @param \TwitchBot\Message $message
      */
