@@ -21,7 +21,9 @@ class Googleit
 
     public function onConnect()
     {
-        $this->getClient()->sendMessage('GoogleIt Plugin activated!');
+        if ($this->getInfo('connect_message')) {
+            $this->getClient()->sendMessage('GoogleIt Plugin activated!');
+        }
     }
     
     /**
@@ -45,12 +47,6 @@ class Googleit
                 $this->getClient()->sendMessage("Usage for google command: google @Username Your request");
             }
 
-        }
-    }
-    public function onConnect()
-    {
-        if ($this->getInfo('connect_message')) {
-            $this->getClient()->sendMessage('Plugin google\'it activate !');
         }
     }
 }

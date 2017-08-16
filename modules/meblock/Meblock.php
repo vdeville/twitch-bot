@@ -21,7 +21,9 @@ class Meblock {
     
     public function onConnect()
     {
-        $this->getClient()->sendMessage('Meblock Plugin activated !');
+        if ($this->getInfo('connect_message')) {
+            $this->getClient()->sendMessage('Meblock Plugin activated !');
+        }
     }
     /**
      * @param \TwitchBot\Message $data
@@ -44,12 +46,5 @@ class Meblock {
     {
         $this->getClient()->sendMessage('.timeout ' . $user . ' ' . $time);
         $this->getClient()->sendToLog('User ' . $user . ' tiemout ' . $time);
-    }
-
-    public function onConnect()
-    {
-        if ($this->getInfo('connect_message')) {
-            $this->getClient()->sendMessage('Plugin meblock activate !');
-        }
     }
 }
