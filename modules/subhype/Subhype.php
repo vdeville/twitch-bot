@@ -20,6 +20,11 @@ class Subhype
         $this->moduleConstructor($infos, $client);
     }
 
+    public function onConnect()
+    {
+        $this->getClient()->sendMessage('SubHype Plugin activated !');
+    }
+    
     /**
      * @param \TwitchBot\Message $message
      */
@@ -63,9 +68,5 @@ class Subhype
         }
 
     }
-
-    public function onConnect()
-    {
-        $this->getClient()->sendMessage('SubHype Plugin activated !');
-    }
+    
 }
