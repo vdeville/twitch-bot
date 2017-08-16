@@ -18,7 +18,11 @@ class Meblock {
     {
         $this->moduleConstructor($infos, $client);
     }
-
+    
+    public function onConnect()
+    {
+        $this->getClient()->sendMessage('Meblock Plugin activated !');
+    }
     /**
      * @param \TwitchBot\Message $data
      */
