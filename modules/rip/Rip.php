@@ -28,6 +28,12 @@ class Rip
         $this->lastUse = 0;
     }
 
+    public function onConnect()
+    {
+        $this->getClient()->sendMessage("Don't die again, your deaths are counted !");
+    }
+
+    
     /**
      * @param \TwitchBot\Message $message
      */
@@ -58,10 +64,6 @@ class Rip
         }
     }
 
-    public function onConnect()
-    {
-        $this->getClient()->sendMessage("Don't die again, your deaths are counted !");
-    }
 
     /**
      * @return bool
