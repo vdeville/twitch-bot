@@ -34,7 +34,7 @@ class Setinfo
 
     public function onConnect()
     {
-        $this->getClient()->sendMessage('Plugin Setinfo activate !');
+        $this->getClient()->sendMessage('Info plugin Activated !');
     }
 
     /**
