@@ -22,7 +22,9 @@ class Twitchapi
 
     public function onConnect()
     {
-        $this->getClient()->sendMessage('TwitchAPI plugin activated !');
+        if ($this->getInfo('connect_message')) {
+            $this->getClient()->sendMessage('TwitchAPI plugin activated !');
+        }
     }
     
     /**
