@@ -23,7 +23,7 @@ class Antispam
     public function onConnect()
     {
         if ($this->getInfo('connect_message')) {
-           $this->getClient()->sendMessage('Antispam system is working on !');
+            $this->getClient()->sendMessage('Antispam system is working on !');
         }
     }
 
@@ -127,7 +127,58 @@ class Antispam
      */
     private function asLink($message)
     {
-        $regex = "#[-a-zA-Z0-9@:%_\+.~\#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~\#?&//=]*)?#si";
+        if ($this->getConfig('use_new_regex_link')) {
+            /**
+             * Thanks to PhantomBot project for this regex
+             * Link: https://github.com/PhantomBot/PhantomBot
+             * Link: https://github.com/PhantomBot/PhantomBot/blob/master/javascript-source/core/patternDetector.js#L9-L49
+             */
+            $regex = '#((?:(http|https|rtsp):\\/\\/(?:(?:[a-z0-9\\$\\-\\_\\.\\+\\!\\*\\\'\\(\\)'
+                . '\\,\\;\\?\\&\\=]|(?:\\%[a-fA-F0-9]{2})){1,64}(?:\\:(?:[a-z0-9\\$\\-\\_'
+                . '\\.\\+\\!\\*\\\'\\(\\)\\,\\;\\?\\&\\=]|(?:\\%[a-fA-F0-9]{2})){1,25})?\\@)?)?'
+                . '((?:(?:[a-z0-9][a-z0-9\\-]{0,64}\\.)+'
+                . '(?:'
+                . '(?:aero|a[cdefgilmnoqrstuwxz])'
+                . '|(?:biz|b[abdefghijmnorstvwyz])'
+                . '|(?:com|c[acdfghiklmnoruvxyz])'
+                . '|d[ejkmoz]'
+                . '|(?:edu|e[cegrstu])'
+                . '|(?:fyi|f[ijkmor])'
+                . '|(?:gov|g[abdefghilmnpqrstuwy])'
+                . '|(?:how|h[kmnrtu])'
+                . '|(?:info|i[delmnoqrst])'
+                . '|(?:jobs|j[emop])'
+                . '|k[eghimnrwyz]'
+                . '|l[abcikrstuvy]'
+                . '|(?:mil|mobi|moe|m[acdeghklmnopqrstuvwxyz])'
+                . '|(?:name|net|n[acefgilopruz])'
+                . '|(?:org|om)'
+                . '|(?:pro|p[aefghklmnrstwy])'
+                . '|qa'
+                . '|(?:r[eouw])'
+                . '|(?:s[abcdeghijklmnortuvyz])'
+                . '|(?:t[cdfghjklmnoprtvwz])'
+                . '|u[agkmsyz]'
+                . '|(?:vote|v[ceginu])'
+                . '|(?:xxx)'
+                . '|(?:watch|w[fs])'
+                . '|y[etu]'
+                . '|z[amw]))'
+                . '|(?:(?:25[0-5]|2[0-4]'
+                . '[0-9]|[0-1][0-9]{2}|[1-9][0-9]|[1-9])\\.(?:25[0-5]|2[0-4][0-9]'
+                . '|[0-1][0-9]{2}|[1-9][0-9]|[1-9]|0)\\.(?:25[0-5]|2[0-4][0-9]|[0-1]'
+                . '[0-9]{2}|[1-9][0-9]|[1-9]|0)\\.(?:25[0-5]|2[0-4][0-9]|[0-1][0-9]{2}'
+                . '|[1-9][0-9]|[0-9])))'
+                . '(?:\\:\\d{1,5})?)'
+                . '(\\/(?:(?:[a-z0-9\\;\\/\\?\\:\\@\\&\\=\\#\\~'
+                . '\\-\\.\\+\\!\\*\\\'\\(\\)\\,\\_])|(?:\\%[a-fA-F0-9]{2}))*)?'
+                . '(?:\\b|$)'
+                . '|(\\.[a-z]+\\/|magnet:\/\/|mailto:\/\/|ed2k:\/\/|irc:\/\/|ircs:\/\/|skype:\/\/|ymsgr:\/\/|xfire:\/\/|steam:\/\/|aim:\/\/|spotify:\/\/)#si';
+
+        } else {
+            $regex = "#[-a-zA-Z0-9@:%_\+.~\#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~\#?&//=]*)?#si";
+        }
+
         if (preg_match($regex, $message, $matches)) {
             if (preg_match('#http#', $matches[0])) {
                 $domain = parse_url($matches[0], PHP_URL_HOST);
