@@ -1,41 +1,42 @@
 {
-  "blacklisted_word": {
-    "level-1": [
-      "level1",
-      "level11"
+    "blacklisted_word": {
+        "level-1": [
+            "level1",
+            "level11"
+        ],
+        "level-2": [
+            "level2",
+            "level22"
+        ],
+        "level-3": [
+            "level3",
+            "level33"
+        ]
+    },
+    "whitelist_domain": [
+        "google.com",
+        "google.fr"
     ],
-    "level-2": [
-      "level2",
-      "level22"
+    "max_lenght": 300,
+    "message_blacklistedword": "%1$s was timeout, he say blacklisted word in category: %2$s",
+    "timeout_blacklistedword": 60,
+    "timeout_link": 120,
+    "message_timeout_link": "%1$s was timeout for link publishing",
+    "timeout_toolong": 30,
+    "message_timeout_toolong": "%1$s was timeout, message too long",
+    "timeout_toomanycaps": 45,
+    "message_timeout_toomanycaps": "%1$s was timeout, too many CAPS",
+    "pourcent_caps": 60,
+    "authorized_people": [
+        "v_deville"
     ],
-    "level-3": [
-      "level3",
-      "level33"
-    ]
-  },
-  "whitelist_domain": [
-    "google.com",
-    "google.fr"
-  ],
-  "max_lenght": 300,
-  "message_blacklistedword": "%1$s was timeout, he say blacklisted word in category: %2$s",
-  "timeout_blacklistedword": 60,
-  "timeout_link": 120,
-  "message_timeout_link": "%1$s was timeout for link publishing",
-  "timeout_toolong": 30,
-  "message_timeout_toolong": "%1$s was timeout, message too long",
-  "timeout_toomanycaps": 45,
-  "message_timeout_toomanycaps": "%1$s was timeout, too many CAPS",
-  "pourcent_caps": 60,
-  "authorized_people": [
-    "v_deville"
-  ],
-  "message_link_add": "%1$s is now authorized to post link",
-  "message_link_already_add": "%1$s is already authorized to post link",
-  "message_link_remove": "%1$s is now not able to send link",
-  "message_link_already_remove": "%1$s is already not authorized",
-  "enable_blacklisterwords": true,
-  "enable_linkdetection": true,
-  "enable_toolong": true,
-  "enable_toomanycaps": true
+    "message_link_add": "%1$s is now authorized to post link",
+    "message_link_already_add": "%1$s is already authorized to post link",
+    "message_link_remove": "%1$s is now not able to send link",
+    "message_link_already_remove": "%1$s is already not authorized",
+    "enable_blacklisterwords": true,
+    "enable_linkdetection": true,
+    "enable_toolong": true,
+    "enable_toomanycaps": true,
+    "use_new_regex_link": true
 }
