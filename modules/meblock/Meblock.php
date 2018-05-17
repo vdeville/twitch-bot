@@ -9,6 +9,8 @@ class Meblock {
         \TwitchBot\Module::__construct as private moduleConstructor;
     }
 
+    private $userLevel;
+
     /**
      * Meblock constructor.
      * @param array $infos
@@ -17,6 +19,7 @@ class Meblock {
     public function __construct(array $infos, $client)
     {
         $this->moduleConstructor($infos, $client);
+        $this->userLevel = ($this->getConfig('allow_sub')) ? 0 : 1;
     }
     
     public function onConnect()
@@ -30,7 +33,7 @@ class Meblock {
      */
     public function onMessage($data)
     {
-        if(preg_match("/ACTION/", $data->getOriginalMsg()) && $data->getUserType() < 2){
+        if(preg_match("/ACTION/", $data->getOriginalMsg()) && $data->getUserType() < $this->userLevel){
             $this->timeout($data->getUsername(), $this->getConfig('timeout_delay'));
 
             $message = sprintf($this->getConfig('message'), $data->getUsername());
