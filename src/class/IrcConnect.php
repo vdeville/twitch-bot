@@ -101,11 +101,22 @@ class IrcConnect
         $commandSymbol = $this->getConfig("command_prefix");
         $commandSymbolLength = strlen($commandSymbol);
 
+        $lastPing = time();
+
         while ($connected) {
+            if ((time() - $lastPing) > 300 OR false === $socket) {
+                $this->sendToLog("==================================================================");
+                $this->sendToLog(" Restart IRC connection (server crash or client connection error)");
+                $this->sendToLog("==================================================================");
+                $socket = $this->socket = $this->connect();
+                $lastPing = time();
+            }
+
             $data = fgets($socket);
 
             $return = explode(':', $data);
             if (rtrim($return[0]) == 'PING') {
+                $lastPing = time();
                 $this->sendRaw('PONG :' . $return[1]);
                 $this->sendToLog('Ping Send !');
                 $this->getModuleLoader()->hookAction('Pong');
