@@ -19,9 +19,9 @@ class Meblock {
     public function __construct(array $infos, $client)
     {
         $this->moduleConstructor($infos, $client);
-        $this->userLevel = ($this->getConfig('allow_sub')) ? 0 : 1;
+        $this->userLevel = ($this->getConfig('allow_sub')) ? 1 : 2;
     }
-    
+
     public function onConnect()
     {
         if ($this->getInfo('connect_message')) {
@@ -33,7 +33,7 @@ class Meblock {
      */
     public function onMessage($data)
     {
-        if(preg_match("/ACTION/", $data->getOriginalMsg()) && $data->getUserType() < $this->userLevel){
+        if(preg_match("/ACTION/", $data->getOriginalMsg()) && $data->getUserType() <= $this->userLevel){
             $this->timeout($data->getUsername(), $this->getConfig('timeout_delay'));
 
             $message = sprintf($this->getConfig('message'), $data->getUsername());
