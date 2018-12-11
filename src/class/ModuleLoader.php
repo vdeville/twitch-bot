@@ -78,7 +78,8 @@ class ModuleLoader
         $instances = [];
         foreach ($this->getModulesList() as $module){
             $module = ucfirst($module);
-            $instances[$module] = new $module($this->getConfig(), $this->getClient());
+            //@todo: After all plugins update, uncomment to re-enable module
+            //$instances[$module] = new $module($this->getConfig(), $this->getClient());
         }
 
         return $instances;

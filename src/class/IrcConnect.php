@@ -125,7 +125,6 @@ class IrcConnect
 
             if ($data) {
                 $this->sendToLog($data);
-
                 if (preg_match('#:(.+):End Of /MOTD Command.#i', $data)) {
                     $connected = false;
                     $this->sendToLog('End of connection, server send the end message', 'error');
@@ -220,19 +219,27 @@ class IrcConnect
 
         $isBroadcaster = ($this->getChannel(true) == $username) ? true : false;
 
-        /**
-         * 0 = viewer
-         * 1 = sub
-         * 2 = mod
-         * 3 = broadcaster
-         */
+        $id = strstr($rawMsg, 'id=');
+        $id = strstr($id, ';', true);
+        $id = str_replace('id=', '', $id);
 
-        if ($isBroadcaster) $userType = 3;
-        elseif ($isMod) $userType = 2;
-        elseif ($isSub) $userType = 1;
-        else $userType = 0;
+        $badges = strstr($rawMsg, '@badges=');
+        $badges = strstr($badges, ';', true);
+        $badges = str_replace('@badges=', '', $badges);
+        $badges = preg_replace('/\/\d+/', '', $badges);
 
-        $message = new Message($rawMsg, $this->removeReturns($username), $this->removeReturns($message), $userType);
+        $badges = explode(',', $badges);
+
+        $isVip = (false === array_search('vip', $badges)) ? false : true;
+
+        $roles = [];
+
+        if ($isBroadcaster) array_push($roles, Message::$ROLE_OWNER);
+        elseif ($isMod) array_push($roles, Message::$ROLE_MOD);
+        elseif ($isSub) array_push($roles, Message::$ROLE_SUB);
+        elseif ($isVip) array_push($roles, Message::$ROLE_VIP);
+
+        $message = new Message($rawMsg, $id, $this->removeReturns($username), $this->removeReturns($message), $roles);
 
         return $message;
     }

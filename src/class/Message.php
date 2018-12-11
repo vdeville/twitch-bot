@@ -8,29 +8,40 @@ namespace TwitchBot;
  */
 class Message
 {
+    private $id;
 
     private $username;
 
     private $message;
 
-    private $user_type;
+    private $roles;
 
     private $date;
 
     private $originalMsg;
 
+    public static $ROLE_SUB = 'ROLE_SUB';
+
+    public static $ROLE_VIP = 'ROLE_VIP';
+
+    public static $ROLE_MOD = 'ROLE_MODERATOR';
+
+    public static $ROLE_OWNER = 'ROLE_OWNER';
+
     /**
      * Message constructor.
-     * @param $originalMsg
-     * @param $username
-     * @param $message
-     * @param int $userType
+     * @param string $originalMsg
+     * @param string $id
+     * @param string $username
+     * @param string $message
+     * @param array $roles
      */
-    public function __construct($originalMsg, $username, $message, $userType = 0)
+    public function __construct($originalMsg, $id, $username, $message, $roles = [])
     {
+        $this->id = $id;
         $this->username = $username;
         $this->message = $message;
-        $this->user_type = $userType;
+        $this->roles = $roles;
         $this->originalMsg = $originalMsg;
 
         $this->date = new \DateTime();
@@ -43,6 +54,14 @@ class Message
     public function getUsername($pretty = false)
     {
         return ($pretty) ? $this->username : strtolower($this->username);
+    }
+
+    /**
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
     /**
@@ -62,11 +81,20 @@ class Message
     }
 
     /**
-     * @return int
+     * @return array
      */
-    public function getUserType()
+    public function getRoles()
     {
-        return $this->user_type;
+        return $this->roles;
+    }
+
+    /**
+     * @param string $toCheck
+     * @return bool
+     */
+    public function hasRole($toCheck)
+    {
+        return (false === array_search($toCheck, $this->getRoles())) ? false : true;
     }
 
     /**
