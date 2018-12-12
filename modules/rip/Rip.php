@@ -1,5 +1,7 @@
 <?php
 
+use TwitchBot\Utils;
+
 /**
  * Class Rip
  */
@@ -46,7 +48,9 @@ class Rip
 
             $args = $command->getArgs();
 
-            if (isset($args[1]) AND $command->getMessage()->getUserType() >= 2) {
+            $message = $command->getMessage();
+
+            if (isset($args[1]) AND (Utils::isOwner($message) OR Utils::isMod($message))) {
 
                 switch ($args[1]) {
                     case 'add':

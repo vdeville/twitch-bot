@@ -1,5 +1,6 @@
 <?php
 
+use TwitchBot\Utils;
 
 /**
  * Class Blame
@@ -26,7 +27,8 @@ class Blame
      */
     public function onCommand($command)
     {
-        if ($command == "blame" AND $command->getMessage()->getUserType() > 2) {
+        $message = $command->getMessage();
+        if ($command == "blame" AND (Utils::isOwner($message) OR Utils::isMod($message))) {
             $this->blame($command->getArgs()[1]);
         }
 

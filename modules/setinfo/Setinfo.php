@@ -1,5 +1,6 @@
 <?php
 
+use TwitchBot\Utils;
 
 /**
  * Class Setinfo
@@ -43,7 +44,7 @@ class Setinfo
      */
     public function onCommand($command)
     {
-        if ($command == "setinfo" AND $command->getMessage()->getUserType() == 3) {
+        if ($command == "setinfo" AND Utils::isOwner($command->getMessage())) {
 
             $info = substr($command->getCommandAndArgsRaw(), 8);
 

@@ -1,5 +1,7 @@
 <?php
 
+use TwitchBot\Utils;
+
 /**
  * Class Meblock
  */
@@ -33,11 +35,23 @@ class Meblock {
      */
     public function onMessage($data)
     {
-        if(preg_match("/ACTION/", $data->getOriginalMsg()) && $data->getUserType() < $this->userLevel){
-            $this->timeout($data->getUsername(), $this->getConfig('timeout_delay'));
+        $timeout = true;
 
-            $message = sprintf($this->getConfig('message'), $data->getUsername());
-            $this->getClient()->sendMessage($message);
+        if(preg_match("/ACTION/", $data->getOriginalMsg())){
+            if($this->getConfig('allow_sub') AND Utils::isSub($data)) {
+                $timeout = false;
+            }
+
+            if(Utils::isMod($data) OR Utils::isOwner($data)) {
+                $timeout = false;
+            }
+
+            if ($timeout) {
+                $this->timeout($data->getUsername(), $this->getConfig('timeout_delay'));
+
+                $message = sprintf($this->getConfig('message'), $data->getUsername());
+                $this->getClient()->sendMessage($message);
+            }
         }
     }
 

@@ -1,5 +1,6 @@
 <?php
 
+use TwitchBot\Utils;
 
 /**
  * Class Streamquote
@@ -37,11 +38,13 @@ class Streamquote
      */
     public function onCommand($command)
     {
-        if ($command == "quote" AND $command->getMessage()->getUserType() > 0) {
+        $message = $command->getMessage();
+
+        if ($command == "quote" AND !Utils::isViewer($message)) {
 
             $this->getQuote();
 
-        } else if ($command == "addquote" AND $command->getMessage()->getUserType() >= 2) {
+        } else if ($command == "addquote" AND (Utils::isMod($message) OR Utils::isOwner($message))) {
             $quote = substr($command->getCommandAndArgsRaw(), 9);
 
             $this->addQuote($quote, $command->getMessage());

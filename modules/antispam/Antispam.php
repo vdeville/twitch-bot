@@ -1,5 +1,7 @@
 <?php
 
+use TwitchBot\Utils;
+
 /**
  * Class Antispam
  */
@@ -32,14 +34,7 @@ class Antispam
      */
     public function onMessage($data)
     {
-        /**
-         * 0 = viewer
-         * 1 = sub
-         * 2 = mod
-         * 3 = broadcaster
-         */
-
-        if ($data->getUserType() < 2) {
+        if (Utils::isViewer($data) OR Utils::isSub($data)) {
             $message = strtolower($data->getMessage());
             /** viewer & sub */
 
@@ -86,7 +81,8 @@ class Antispam
      */
     public function onCommand($command)
     {
-        if ($command == "permitlink" AND $command->getMessage()->getUserType() == 3) {
+        $message = $command->getMessage();
+        if ($command == "permitlink" AND (Utils::isMod($message) OR Utils::isOwner($message))) {
             $args = $command->getArgs();
             switch ($args[1]) {
                 case 'on':
@@ -310,6 +306,15 @@ class Antispam
     {
         $this->getClient()->sendMessage('.timeout ' . $user . ' ' . $time);
         $this->getClient()->sendToLog('User ' . $user . ' tiemout ' . $time);
+    }
+
+    /**
+     * @param \TwitchBot\Message $message
+     */
+    private function deleteMessage($message)
+    {
+        //@todo: add delete option in config. Make choice between timeout and delete message
+        $this->getClient()->sendMessage('.delete ' . $message->getId());
     }
 
 }
