@@ -85,12 +85,13 @@ class Commands
 
     /**
      * @param \TwitchBot\Command $command
-     * @param $userToPing
      */
     public function sendResponse(\TwitchBot\Command $command)
     {
-        if (isset($this->lastCommands[$command->getCommand()])) {
-            $time = $this->lastCommands[$command->getCommand()];
+        $cmd = $this->getRealCommand($command->getCommand());
+
+        if (isset($this->lastCommands[$cmd])) {
+            $time = $this->lastCommands[$cmd];
         } else {
             $time = time() - $this->delay;
         }
@@ -110,10 +111,10 @@ class Commands
             }
 
             if ($userToPing != false) {
-                $message = sprintf($this->getConfig('message_replytouser'), $userToPing, $this->getCommands($command));
+                $message = sprintf($this->getConfig('message_replytouser'), $userToPing, $this->getCommands($cmd));
                 $this->getClient()->sendMessage($message);
             } else {
-                $message = sprintf($this->getConfig('message_reply'), $this->getCommands($command));
+                $message = sprintf($this->getConfig('message_reply'), $this->getCommands($cmd));
                 $this->getClient()->sendMessage($message);
             }
 
