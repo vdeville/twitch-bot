@@ -227,7 +227,6 @@ class IrcConnect
         $badges = strstr($badges, ';', true);
         $badges = str_replace('@badges=', '', $badges);
         $badges = preg_replace('/\/\d+/', '', $badges);
-
         $badges = explode(',', $badges);
 
         $isVip = (false === array_search('vip', $badges)) ? false : true;
@@ -235,9 +234,9 @@ class IrcConnect
         $roles = [];
 
         if ($isBroadcaster) array_push($roles, Message::$ROLE_OWNER);
-        elseif ($isMod) array_push($roles, Message::$ROLE_MOD);
-        elseif ($isSub) array_push($roles, Message::$ROLE_SUB);
-        elseif ($isVip) array_push($roles, Message::$ROLE_VIP);
+        if ($isMod) array_push($roles, Message::$ROLE_MOD);
+        if ($isSub) array_push($roles, Message::$ROLE_SUB);
+        if ($isVip) array_push($roles, Message::$ROLE_VIP);
 
         $message = new Message($rawMsg, $id, $this->removeReturns($username), $this->removeReturns($message), $roles);
 
