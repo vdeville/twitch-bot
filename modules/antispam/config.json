@@ -38,5 +38,6 @@
     "enable_linkdetection": true,
     "enable_toolong": true,
     "enable_toomanycaps": true,
-    "use_new_regex_link": true
+    "use_new_regex_link": true,
+    "delete_message_instead_of_timeout": true
 }

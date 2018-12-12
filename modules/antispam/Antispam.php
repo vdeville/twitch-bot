@@ -41,7 +41,7 @@ class Antispam
             if ($this->getConfig('enable_blacklisterwords')) {
                 $isBlacklisted = $this->isBlacklist($message);
                 if ($isBlacklisted != false) {
-                    $this->timeout($data->getUsername(), $this->getConfig('timeout_blacklistedword'));
+                    $this->timeout($data, $this->getConfig('timeout_blacklistedword'));
                     $message = sprintf($this->getConfig('message_blacklistedword'), $data->getUsername(), $isBlacklisted);
                     $this->getClient()->sendMessage($message);
                 }
@@ -49,7 +49,7 @@ class Antispam
 
             if ($this->getConfig('enable_linkdetection')) {
                 if ($this->asLink($message) AND !$this->isAuthorizedPeopleLink($data->getUsername())) {
-                    $this->timeout($data->getUsername(), $this->getConfig('timeout_link'));
+                    $this->timeout($data, $this->getConfig('timeout_link'));
                     $message = sprintf($this->getConfig('message_timeout_link'), $data->getUsername());
                     $this->getClient()->sendMessage($message);
                 }
@@ -57,7 +57,7 @@ class Antispam
 
             if ($this->getConfig('enable_toolong')) {
                 if ($this->isTooLong($message)) {
-                    $this->timeout($data->getUsername(), $this->getConfig('timeout_toolong'));
+                    $this->timeout($data, $this->getConfig('timeout_toolong'));
                     $message = sprintf($this->getConfig('message_timeout_toolong'), $data->getUsername());
                     $this->getClient()->sendMessage($message);
                 }
@@ -65,7 +65,7 @@ class Antispam
 
             if ($this->getConfig('enable_toomanycaps')) {
                 if ($this->tooManyCaps($data->getMessage())) {
-                    $this->timeout($data->getUsername(), $this->getConfig('timeout_toomanycaps'));
+                    $this->timeout($data, $this->getConfig('timeout_toomanycaps'));
                     $message = sprintf($this->getConfig('message_timeout_toomanycaps'), $data->getUsername());
                     $this->getClient()->sendMessage($message);
                 }
@@ -299,13 +299,18 @@ class Antispam
     }
 
     /**
-     * @param $user
+     * @param \TwitchBot\Message $message
      * @param $time
      */
-    private function timeout($user, $time)
+    private function timeout($message, $time)
     {
-        $this->getClient()->sendMessage('.timeout ' . $user . ' ' . $time);
-        $this->getClient()->sendToLog('User ' . $user . ' tiemout ' . $time);
+        if ($this->getConfig('delete_message_instead_of_timeout')) {
+            $this->deleteMessage($message);
+        } else {
+            $user = $message->getUsername();
+            $this->getClient()->sendMessage('.timeout ' . $user . ' ' . $time);
+            $this->getClient()->sendToLog('User ' . $user . ' timeout ' . $time);
+        }
     }
 
     /**
@@ -313,7 +318,6 @@ class Antispam
      */
     private function deleteMessage($message)
     {
-        //@todo: add delete option in config. Make choice between timeout and delete message
         $this->getClient()->sendMessage('.delete ' . $message->getId());
     }
 
