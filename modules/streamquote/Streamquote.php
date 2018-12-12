@@ -40,7 +40,7 @@ class Streamquote
     {
         $message = $command->getMessage();
 
-        if ($command == "quote" AND !Utils::isViewer($message)) {
+        if ($command == "quote" AND Utils::isMoreThanViewer($message)) {
 
             $this->getQuote();
 
