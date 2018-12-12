@@ -42,6 +42,10 @@ class Meblock {
                 $timeout = false;
             }
 
+            if($this->getConfig('allow_vip') AND Utils::isVip($data)) {
+                $timeout = false;
+            }
+
             if(Utils::isMod($data) OR Utils::isOwner($data)) {
                 $timeout = false;
             }
