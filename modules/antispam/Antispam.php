@@ -48,7 +48,7 @@ class Antispam
             }
 
             if ($this->getConfig('enable_linkdetection')) {
-                if ($this->asLink($message) AND !$this->isAuthorizedPepopleLink($data->getUsername())) {
+                if ($this->asLink($message) AND !$this->isAuthorizedPeopleLink($data->getUsername())) {
                     $this->timeout($data->getUsername(), $this->getConfig('timeout_link'));
                     $message = sprintf($this->getConfig('message_timeout_link'), $data->getUsername());
                     $this->getClient()->sendMessage($message);
@@ -237,7 +237,7 @@ class Antispam
      * @param $user
      * @return bool
      */
-    private function isAuthorizedPepopleLink($user)
+    private function isAuthorizedPeopleLink($user)
     {
         $user = strtolower($user);
         $authorizedPeoples = $this->getConfig('authorized_people');
