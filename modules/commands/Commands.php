@@ -43,18 +43,9 @@ class Commands
      */
     public function onCommand($command)
     {
-        $commandName = $command->getCommand();
-        $args = $command->getArgs();
-        $userToPing = false;
-
-        if (key_exists($commandName, $this->getCommands())) {
-            if (count($args) == 2) {
-                $userToPing = $args[1];
-            }
-
-            //$this->sendResponse($commandName, $userToPing);
+        if (key_exists($command->getCommand(), $this->getCommands())) {
             $this->sendResponse($command);
-            $this->getClient()->sendToLog("Command $commandName was send");
+            $this->getClient()->sendToLog("Command " . $command . " was send");
         }
     }
 
