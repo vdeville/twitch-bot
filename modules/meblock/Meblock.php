@@ -11,8 +11,6 @@ class Meblock {
         \TwitchBot\Module::__construct as private moduleConstructor;
     }
 
-    private $userLevel;
-
     /**
      * Meblock constructor.
      * @param array $infos
@@ -21,7 +19,6 @@ class Meblock {
     public function __construct(array $infos, $client)
     {
         $this->moduleConstructor($infos, $client);
-        $this->userLevel = ($this->getConfig('allow_sub')) ? 1 : 2;
     }
 
     public function onConnect()
@@ -51,21 +48,34 @@ class Meblock {
             }
 
             if ($timeout) {
-                $this->timeout($data->getUsername(), $this->getConfig('timeout_delay'));
-
-                $message = sprintf($this->getConfig('message'), $data->getUsername());
-                $this->getClient()->sendMessage($message);
+                $this->timeout($data, $this->getConfig('timeout_delay'));
             }
         }
     }
 
     /**
-     * @param $user
+     * @param \TwitchBot\Message $message
      * @param $time
      */
-    private function timeout($user, $time)
+    private function timeout($message, $time)
     {
-        $this->getClient()->sendMessage('.timeout ' . $user . ' ' . $time);
-        $this->getClient()->sendToLog('User ' . $user . ' tiemout ' . $time);
+        if ($this->getConfig('delete_instead_of_timeout')) {
+            $this->deleteMessage($message);
+        } else {
+            $user = $message->getUsername();
+            $this->getClient()->sendMessage('.timeout ' . $user . ' ' . $time);
+            $this->getClient()->sendToLog('User ' . $user . ' timeout ' . $time);
+
+            $msg = sprintf($this->getConfig('message'), $message->getUsername());
+            $this->getClient()->sendMessage($msg);
+        }
+    }
+
+    /**
+     * @param \TwitchBot\Message $message
+     */
+    private function deleteMessage($message)
+    {
+        $this->getClient()->sendMessage('.delete ' . $message->getId());
     }
 }

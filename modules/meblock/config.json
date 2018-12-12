@@ -1,6 +1,7 @@
 {
   "timeout_delay": 20,
-  "message": "@%1$s tiemout, /me not authorized here",
+  "message": "@%1$s timeout, /me not authorized here",
   "allow_sub": true,
-  "allow_vip": true
+  "allow_vip": true,
+  "delete_instead_of_timeout": true
 }
