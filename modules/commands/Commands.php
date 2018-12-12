@@ -52,7 +52,8 @@ class Commands
                 $userToPing = $args[1];
             }
 
-            $this->sendResponse($commandName, $userToPing);
+            //$this->sendResponse($commandName, $userToPing);
+            $this->sendResponse($command);
             $this->getClient()->sendToLog("Command $commandName was send");
         }
     }
@@ -92,23 +93,30 @@ class Commands
     }
 
     /**
-     * @param $command
+     * @param \TwitchBot\Command $command
      * @param $userToPing
      */
-    public function sendResponse($command, $userToPing)
+    public function sendResponse(\TwitchBot\Command $command)
     {
-
-        $command = $this->getRealCommand($command);
-
-        if (isset($this->lastCommands[$command])) {
-            $time = $this->lastCommands[$command];
+        if (isset($this->lastCommands[$command->getCommand()])) {
+            $time = $this->lastCommands[$command->getCommand()];
         } else {
             $time = time() - $this->delay;
         }
 
         $diff = time() - $time;
 
-        if ($diff >= $this->delay) {
+        // Check if user who request the command has bypass access
+        $rolesAuthorizedInCommon = array_intersect($this->getConfig('no_delay_for'), $command->getMessage()->getRoles());
+
+        if ($diff >= $this->delay
+            OR count($rolesAuthorizedInCommon) > 0) {
+
+            $userToPing = false;
+
+            if (count($command->getArgs()) == 2) {
+                $userToPing = $command->getArgs()[1];
+            }
 
             if ($userToPing != false) {
                 $message = sprintf($this->getConfig('message_replytouser'), $userToPing, $this->getCommands($command));
@@ -118,7 +126,7 @@ class Commands
                 $this->getClient()->sendMessage($message);
             }
 
-            $this->lastCommands[$command] = time();
+            $this->lastCommands[$command->getCommand()] = time();
         }
 
     }
