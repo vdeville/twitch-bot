@@ -1,0 +1,5 @@
+{
+  "name": "Setnext",
+  "description": "Reply when user type !next or streamer !setnext",
+  "author" : ["Valentin Deville"]
+}

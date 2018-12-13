@@ -1,0 +1,7 @@
+{
+  "delay": 30,
+  "message_new_next": "Nouvelle réponse définie pour !next",
+  "message_reply": "%1$s",
+  "message_reply_user": "%1$s, %2$s",
+  "next_reply": "Le prochain live aura lieu %1$s à %2$s"
+}
