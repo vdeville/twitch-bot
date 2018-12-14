@@ -1,7 +1,7 @@
 <?php
 
-use TwitchBot\Utils;
 use TwitchBot\Message;
+use TwitchBot\Utils;
 
 /**
  * Class Antispam
@@ -45,7 +45,7 @@ class Antispam
                 if ($isBlacklisted != false) {
                     $this->timeout($data, $this->getConfig('timeout_blacklistedword'));
                     $message = sprintf($this->getConfig('message_blacklistedword'), $data->getUsername(), $isBlacklisted);
-                    $this->getClient()->sendMessage($message);
+                    $this->sendMessage($message);
                 }
             }
 
@@ -53,7 +53,7 @@ class Antispam
                 if ($this->asLink($message) AND !$this->isAuthorizedPeopleLink($data->getUsername())) {
                     $this->timeout($data, $this->getConfig('timeout_link'));
                     $message = sprintf($this->getConfig('message_timeout_link'), $data->getUsername());
-                    $this->getClient()->sendMessage($message);
+                    $this->sendMessage($message);
                 }
             }
 
@@ -61,7 +61,7 @@ class Antispam
                 if ($this->isTooLong($message)) {
                     $this->timeout($data, $this->getConfig('timeout_toolong'));
                     $message = sprintf($this->getConfig('message_timeout_toolong'), $data->getUsername());
-                    $this->getClient()->sendMessage($message);
+                    $this->sendMessage($message);
                 }
             }
 
@@ -69,7 +69,7 @@ class Antispam
                 if ($this->tooManyCaps($data->getMessage())) {
                     $this->timeout($data, $this->getConfig('timeout_toomanycaps'));
                     $message = sprintf($this->getConfig('message_timeout_toomanycaps'), $data->getUsername());
-                    $this->getClient()->sendMessage($message);
+                    $this->sendMessage($message);
                 }
             }
 
@@ -321,6 +321,16 @@ class Antispam
     private function deleteMessage($message)
     {
         $this->getClient()->sendMessage('.delete ' . $message->getId());
+    }
+
+    /**
+     * @param string $msg
+     */
+    private function sendMessage($msg)
+    {
+        if (!$this->getConfig('delete_message_instead_of_timeout')) {
+            $this->getClient()->sendMessage($msg);
+        }
     }
 
 }
