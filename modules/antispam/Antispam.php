@@ -321,6 +321,7 @@ class Antispam
     private function deleteMessage($message)
     {
         $this->getClient()->sendMessage('.delete ' . $message->getId());
+        $this->getClient()->sendToLog('Remove message from ' . $message->getUsername() . ' with id ' . $message->getId());
     }
 
     /**
