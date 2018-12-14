@@ -19,6 +19,22 @@ class Utils
     }
 
     /**
+     * @param array $toCheck
+     * @param Message $message
+     * @return bool
+     */
+    public static function hasOneOfRoles(array $toCheck, Message $message)
+    {
+        foreach ($toCheck as $role) {
+            if (Utils::hasRole($role, $message)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * @param Message $message
      * @return bool
      */

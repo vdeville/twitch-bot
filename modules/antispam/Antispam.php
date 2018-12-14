@@ -1,6 +1,7 @@
 <?php
 
 use TwitchBot\Utils;
+use TwitchBot\Message;
 
 /**
  * Class Antispam
@@ -34,7 +35,8 @@ class Antispam
      */
     public function onMessage($data)
     {
-        if (Utils::isViewer($data) OR Utils::isSub($data)) {
+        $filter = !Utils::hasOneOfRoles([Message::$ROLE_OWNER, Message::$ROLE_MOD], $data);
+        if ($filter) {
             $message = strtolower($data->getMessage());
             /** viewer & sub */
 
