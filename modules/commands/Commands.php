@@ -1,5 +1,7 @@
 <?php
 
+use TwitchBot\Utils;
+
 /**
  * Class Commands
  */
@@ -98,11 +100,9 @@ class Commands
 
         $diff = time() - $time;
 
-        // Check if user who request the command has bypass access
-        $rolesAuthorizedInCommon = array_intersect($this->getConfig('no_delay_for'), $command->getMessage()->getRoles());
-
         if ($diff >= $this->delay
-            OR count($rolesAuthorizedInCommon) > 0) {
+                // check if user has bypass roles
+            OR Utils::hasOneOfRoles($this->getConfig('no_delay_for'), $command->getMessage())) {
 
             $userToPing = false;
 
