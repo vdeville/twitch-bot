@@ -2,12 +2,9 @@
 
 ## Documention
 
-**New documentation !**
+**New documentation (2019)!**
 
-**https://mythevalentinus.github.io/twitch-bot/en/**
+**https://mythevalentinus.github.io/twitch-bot-docs/**
 
-
-## Examples:
-https://www.twitch.tv/warths (with custom modules and default)
 
 If you use this bot on you channel, please let me know ! Contact me on Twitter or by email. (@MyTheValentinus or contact[@]valentin-deville.eu)
