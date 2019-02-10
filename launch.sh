@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-VERSION=1.3
+VERSION=1.5.0
 TITLE="Twitch Bot $VERSION"
 OPTION=$(dialog --title "$TITLE" --menu "What do you want ?" 10 78 3 \
 "1" "Launch the bot" \

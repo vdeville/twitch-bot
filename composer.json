@@ -2,7 +2,7 @@
     "name": "valentindeville/twitchbot",
     "description": "Twitch Bot",
     "type": "project",
-    "version": "1.3",
+    "version": "1.5.0",
 
     "require": {
         "symfony/finder": "^3.3"
