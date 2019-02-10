@@ -44,7 +44,7 @@ class Subhype
             $username = strstr($username, ';', true);
             $username = str_replace('login=', '', $username);
 
-            $months = strstr($rawMsg, 'msg-param-months=');
+            $months = strstr($rawMsg, 'msg-param-cumulative-months=');
             if ($months != false) {
                 $months = strstr($months, ';', true);
                 $months = str_replace('msg-param-months=', '', $months);
