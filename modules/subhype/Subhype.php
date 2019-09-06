@@ -47,7 +47,7 @@ class Subhype
             $months = strstr($rawMsg, 'msg-param-cumulative-months=');
             if ($months != false) {
                 $months = strstr($months, ';', true);
-                $months = str_replace('msg-param-months=', '', $months);
+                $months = str_replace('msg-param-cumulative-months=', '', $months);
                 if ($months == '1') {
                     $months = false;
                 }
