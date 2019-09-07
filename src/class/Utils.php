@@ -42,6 +42,15 @@ class Utils
     {
         return true;
     }
+    
+    /**
+     * @param Message $message
+     * @return bool
+     */
+    public static function hasTurbo(Message $message)
+    {
+        return (Utils::hasRole(Message::$TURBO_USER, $message)) ? true : false;
+    }
 
     /**
      * @param Message $message
