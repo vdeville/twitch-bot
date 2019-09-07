@@ -11,6 +11,8 @@ class Message
     private $id;
 
     private $username;
+    
+    private $userId;
 
     private $message;
 
@@ -27,6 +29,8 @@ class Message
     public static $ROLE_MOD = 'ROLE_MODERATOR';
 
     public static $ROLE_OWNER = 'ROLE_OWNER';
+    
+    public static $TURBO_USER = 'TURBO_USER';
 
     /**
      * Message constructor.
@@ -34,12 +38,14 @@ class Message
      * @param string $id
      * @param string $username
      * @param string $message
+     * @param integer $userId
      * @param array $roles
      */
-    public function __construct($originalMsg, $id, $username, $message, $roles = [])
+    public function __construct($originalMsg, $id, $username, $message, $userId, $roles = [])
     {
         $this->id = $id;
         $this->username = $username;
+        $this->userId = $userId;
         $this->message = $message;
         $this->roles = $roles;
         $this->originalMsg = $originalMsg;
@@ -62,6 +68,14 @@ class Message
     public function getId()
     {
         return $this->id;
+    }
+    
+    /**
+     * @return integer
+     */
+    public function getUserId()
+    {
+        return $this->userId;
     }
 
     /**
