@@ -216,12 +216,20 @@ class IrcConnect
         $isSub = strstr($rawMsg, 'subscriber=');
         $isSub = substr($isSub, 11, 1);
         $isSub = boolval($isSub);
+        
+        $hasTurbo = strstr($rawMsg, 'turbo=');
+        $hasTurbo = substr($hasTurbo, 6, 1);
+        $hasTurbo = boolval($hasTurbo);
 
         $isBroadcaster = ($this->getChannel(true) == $username) ? true : false;
 
         $id = strstr($rawMsg, 'id=');
         $id = strstr($id, ';', true);
         $id = str_replace('id=', '', $id);
+        
+        $senderId = strstr($rawMsg, 'user-id=');
+        $senderId = strstr($senderId, ';', true);
+        $senderId = str_replace('user-id=', '', $senderId);
 
         $badges = strstr($rawMsg, '@badges=');
         $badges = strstr($badges, ';', true);
@@ -237,8 +245,9 @@ class IrcConnect
         if ($isMod) array_push($roles, Message::$ROLE_MOD);
         if ($isSub) array_push($roles, Message::$ROLE_SUB);
         if ($isVip) array_push($roles, Message::$ROLE_VIP);
+        if ($hasTurbo) array_push($roles, Message::$TURBO_USER);
 
-        $message = new Message($rawMsg, $id, $this->removeReturns($username), $this->removeReturns($message), $roles);
+        $message = new Message($rawMsg, $id, $this->removeReturns($username), $this->removeReturns($message), $senderId, $roles);
 
         return $message;
     }
