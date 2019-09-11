@@ -231,9 +231,9 @@ class IrcConnect
         $senderId = strstr($senderId, ';', true);
         $senderId = str_replace('user-id=', '', $senderId);
 
-        $badges = strstr($rawMsg, '@badges=');
+        $badges = strstr($rawMsg, 'badges=');
         $badges = strstr($badges, ';', true);
-        $badges = str_replace('@badges=', '', $badges);
+        $badges = str_replace('badges=', '', $badges);
         $badges = preg_replace('/\/\d+/', '', $badges);
         $badges = explode(',', $badges);
 
